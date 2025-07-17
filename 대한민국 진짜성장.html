@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대한민국 진짜성장 전략 마인드맵</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Noto Sans KR -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 사용자 정의 스타일 */
+        body {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+        }
+        /* 토글 애니메이션을 위한 스타일 */
+        .nested {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .active {
+            max-height: 2000px; /* 충분히 큰 값으로 설정 */
+        }
+        .caret-icon {
+            transition: transform 0.3s ease;
+        }
+        .caret-down .caret-icon {
+            transform: rotate(90deg);
+        }
+        /* 마인드맵 라인 */
+        .mindmap-item {
+            position: relative;
+            padding-left: 25px; 
+        }
+        .mindmap-item::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #d1d5db; /* Gray-300 */
+        }
+        .mindmap-item:last-child::before {
+             height: 18px; /* 마지막 항목의 라인 길이 조절 */
+        }
+        .mindmap-item::after {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 18px;
+            width: 15px;
+            height: 2px;
+            background-color: #d1d5db; /* Gray-300 */
+        }
+        /* 최상위 항목은 라인 제거 */
+        #mindmap > .mindmap-item {
+            padding-left: 0;
+        }
+        #mindmap > .mindmap-item::before,
+        #mindmap > .mindmap-item::after {
+            display: none;
+        }
+        .description {
+            color: #4b5563; /* Gray-600 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-10 w-full max-w-5xl">
+        <header class="mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 text-center">대한민국 진짜성장 전략</h1>
+            <p class="text-center text-gray-500 mt-2">Mindmap</p>
+        </header>
+        
+        <ul id="mindmap">
+            <!-- 비전 -->
+            <li class="mindmap-item mb-2">
+                <div class="caret flex items-center cursor-pointer p-2 rounded-lg hover:bg-blue-50">
+                    <svg class="caret-icon w-5 h-5 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    <span class="font-semibold text-lg text-gray-700">비전: 경제·산업 대도약 (3·3·5)</span>
+                </div>
+                <ul class="nested ml-5">
+                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-800">AI 3대 강국</strong><span class="description block text-sm">AI 기술력과 인프라를 바탕으로 해당 분야에서 세계 3강으로 도약하는 것을 목표로 합니다.</span></div></li>
+                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-800">잠재성장률 3%</strong><span class="description block text-sm">2% 이하로 하락한 잠재성장률을 혁신을 통해 3% 수준으로 끌어올리는 것을 목표로 합니다.</span></div></li>
+                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-800">국력 세계 5강</strong><span class="description block text-sm">경제력 등 하드파워와 문화 등 소프트파워를 종합한 국력을 세계 5강 수준으로 만드는 것을 목표로 합니다.</span></div></li>
+                </ul>
+            </li>
+
+            <!-- 3대 전략 -->
+            <li class="mindmap-item mb-2">
+                <div class="caret flex items-center cursor-pointer p-2 rounded-lg hover:bg-blue-50">
+                     <svg class="caret-icon w-5 h-5 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    <span class="font-semibold text-lg text-gray-700">3대 전략 (TGF)</span>
+                </div>
+                <ul class="nested ml-5">
+                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-800">기술주도 성장 (T)</strong><span class="description block text-sm">미래 전략산업을 육성하고 기존 산업의 경쟁력을 높여 새로운 성장동력을 확보하는 전략입니다.</span></div></li>
+                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-800">모두의 성장 (G)</strong><span class="description block text-sm">중소벤처, 지역, 국민 모두가 성장의 주체로 참여하여 경제 전반의 성장 영역을 넓히는 전략입니다.</span></div></li>
+                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-800">공정한 성장 (F)</strong><span class="description block text-sm">불공정한 시장 구조를 바로잡고 상생의 생태계를 만들어 혁신과 성장의 유인을 높이는 전략입니다.</span></div></li>
+                </ul>
+            </li>
+
+            <!-- 5대 과제 -->
+            <li class="mindmap-item mb-2">
+                <div class="caret flex items-center cursor-pointer p-2 rounded-lg hover:bg-blue-50">
+                     <svg class="caret-icon w-5 h-5 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    <span class="font-semibold text-lg text-gray-700">5대 과제</span>
+                </div>
+                <ul class="nested ml-5">
+                    <!-- 과제 1 -->
+                    <li class="mindmap-item">
+                        <div class="caret flex items-center cursor-pointer p-2 rounded-lg hover:bg-green-50">
+                            <svg class="caret-icon w-5 h-5 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            <span class="font-medium text-gray-700">1. AI 3대 강국 진입과 미래전략산업 육성</span>
+                        </div>
+                        <ul class="nested ml-5">
+                            <li class="mindmap-item">
+                                <div class="caret flex items-center cursor-pointer p-2 rounded-lg hover:bg-purple-50">
+                                    <svg class="caret-icon w-5 h-5 text-purple-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                    <strong class="text-gray-800">AI 3대 강국 진입</strong>
+                                </div>
+                                <ul class="nested ml-5">
+                                    <li class="mindmap-item">
+                                        <div class="caret flex items-center cursor-pointer p-2 rounded-lg hover:bg-indigo-50">
+                                            <svg class="caret-icon w-5 h-5 text-indigo-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                            <strong class="text-gray-700">AI 고속도로 구축</strong>
+                                        </div>
+                                        <ul class="nested ml-5">
+                                            <li class="mindmap-item"><div class="p-2"><strong class="text-gray-600">Mega-AI 클러스터</strong><span class="description block text-sm">대규모 데이터센터와 AI 컴퓨팅 센터를 갖춘 핵심 거점으로, 인재양성 및 스타트업 육성의 중심지 역할을 합니다.</span></div></li>
+                                            <li class="mindmap-item"><div class="p-2"><strong class="text-gray-600">산업별 AI+X 센터</strong><span class="description block text-sm">메가 클러스터와 지역 산업단지를 연결하여, 제조업·문화·에너지 등 각 산업에 특화된 AI 기술을 개발하고 사업화합니다.</span></div></li>
+                                        </ul>
+                                    </li>
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">100조 투자 유치</strong><span class="description block text-sm">정부 예산과 국민펀드를 마중물로 AI 인프라 및 유망 기업 육성에 필요한 대규모 투자를 유치합니다.</span></div></li>
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">AI 인재 양성</strong><span class="description block text-sm">초·중·고 교육부터 산업 인력 재교육까지 이어지는 맞춤형 교육 체계로 전문인력을 양성합니다.</span></div></li>
+                                </ul>
+                            </li>
+                            <li class="mindmap-item">
+                                <div class="caret flex items-center cursor-pointer p-2 rounded-lg hover:bg-purple-50">
+                                    <svg class="caret-icon w-5 h-5 text-purple-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                    <strong class="text-gray-800">미래전략산업 육성 (B-C-D)</strong>
+                                </div>
+                                <ul class="nested ml-5">
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">바이오헬스(B)</strong><span class="description block text-sm">R&D 투자 확대와 클러스터 조성을 통해 관련 시장 규모를 세계 7위권으로 성장시킵니다.</span></div></li>
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">문화콘텐츠(C)</strong><span class="description block text-sm">K-콘텐츠의 세계시장 진출을 위한 금융 및 인프라 지원을 강화하여 글로벌 소프트파워 5대 강국에 진입합니다.</span></div></li>
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">방위·우주·항공(D)</strong><span class="description block text-sm">수출 지원 체계 강화와 R&D 투자 확대를 통해 5년 내 K-방산을 세계 4대 강국 수준으로 끌어올립니다.</span></div></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- 과제 2 -->
+                    <li class="mindmap-item">
+                        <div class="caret flex items-center cursor-pointer p-2 rounded-lg hover:bg-green-50">
+                             <svg class="caret-icon w-5 h-5 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            <span class="font-medium text-gray-700">2. 에너지 전환과 산업 업그레이드</span>
+                        </div>
+                        <ul class="nested ml-5">
+                            <li class="mindmap-item">
+                                <div class="caret flex items-center cursor-pointer p-2 rounded-lg hover:bg-purple-50">
+                                    <svg class="caret-icon w-5 h-5 text-purple-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                    <strong class="text-gray-800">에너지 전환</strong>
+                                </div>
+                                <ul class="nested ml-5">
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">2050 탄소중립 실현</strong><span class="description block text-sm">기후에너지부 신설, 탄소중립산업법 제정 등 제도적 기반을 마련하여 산업 구조의 대전환을 추진합니다.</span></div></li>
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">친환경산업 기반 조성</strong><span class="description block text-sm">RE100 전용 산업단지를 조성하고 저탄소 공정 기술 도입을 지원하여 기업의 환경규제 대응력을 높입니다.</span></div></li>
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">재생에너지 공급 확대</strong><span class="description block text-sm">해상풍력 단지를 조성하고 에너지고속도로를 건설하여 AI 및 첨단산업의 전력 수요에 대비합니다.</span></div></li>
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">지역 분산형 에너지 체계</strong><span class="description block text-sm">수요지 인근에서 에너지를 생산·소비하는 통합발전소(VPP)를 구축하고, 주민 이익공유제를 확대합니다.</span></div></li>
+                                </ul>
+                            </li>
+                            <li class="mindmap-item">
+                                <div class="caret flex items-center cursor-pointer p-2 rounded-lg hover:bg-purple-50">
+                                    <svg class="caret-icon w-5 h-5 text-purple-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                    <strong class="text-gray-800">산업 업그레이드</strong>
+                                </div>
+                                <ul class="nested ml-5">
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">주력산업 위기 극복</strong><span class="description block text-sm">석유화학, 철강 등 위기 산업의 고부가가치·디지털·친환경 전환을 지원합니다.</span></div></li>
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">경쟁우위 산업 초격차 확보</strong><span class="description block text-sm">반도체 메가 클러스터, 스마트·친환경 선박 등 초격차 기술 확보를 다면적으로 지원합니다.</span></div></li>
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">AI 산업 융합(AI-X) 확대</strong><span class="description block text-sm">제조업에 AI를 융합하여 스마트공장을 고도화하고 생산성을 증대시킵니다.</span></div></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                     <!-- 과제 3 -->
+                    <li class="mindmap-item">
+                        <div class="caret flex items-center cursor-pointer p-2 rounded-lg hover:bg-green-50">
+                             <svg class="caret-icon w-5 h-5 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            <span class="font-medium text-gray-700">3. 중소벤처 및 과학기술 혁신 생태계 확립</span>
+                        </div>
+                        <ul class="nested ml-5">
+                            <li class="mindmap-item">
+                                <div class="caret flex items-center cursor-pointer p-2 rounded-lg hover:bg-purple-50">
+                                    <svg class="caret-icon w-5 h-5 text-purple-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                    <strong class="text-gray-800">중소벤처 혁신</strong>
+                                </div>
+                                <ul class="nested ml-5">
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">인프라 및 제도 개혁</strong><span class="description block text-sm">사업화 중심의 R&D 지원, 스마트공장 도입, 글로벌화 지원 등 성장 기반을 마련합니다.</span></div></li>
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">벤처투자시장 확대</strong><span class="description block text-sm">국민펀드 조성, 모태펀드 확대, M&A 활성화 등을 통해 모험자본 공급을 늘립니다.</span></div></li>
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">딥테크·혁신분야 스케일업</strong><span class="description block text-sm">전담 투자·관리기구를 설립하고 장기적 투자를 통해 딥테크 유니콘 기업을 육성합니다.</span></div></li>
+                                </ul>
+                            </li>
+                            <li class="mindmap-item">
+                                <div class="caret flex items-center cursor-pointer p-2 rounded-lg hover:bg-purple-50">
+                                    <svg class="caret-icon w-5 h-5 text-purple-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                    <strong class="text-gray-800">과학기술 혁신 생태계</strong>
+                                </div>
+                                <ul class="nested ml-5">
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">안정적 R&D 예산 확보</strong><span class="description block text-sm">R&D 예산을 국가 지출 대비 일정 수준 이상으로 법제화하여 장기적·도전적 연구를 장려합니다.</span></div></li>
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">국가 R&D 거버넌스 개혁</strong><span class="description block text-sm">관료·하향식 체계를 연구자·수요자 중심의 개방형 체계로 전환하여 효율성을 높입니다.</span></div></li>
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">연구 몰입 환경 조성</strong><span class="description block text-sm">출연연의 자율성을 강화하고, 청년·신진 연구자에 대한 지원을 확대합니다.</span></div></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                     <!-- 과제 4 -->
+                    <li class="mindmap-item">
+                        <div class="caret flex items-center cursor-pointer p-2 rounded-lg hover:bg-green-50">
+                             <svg class="caret-icon w-5 h-5 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            <span class="font-medium text-gray-700">4. 지역성장과 국토공간 혁신</span>
+                        </div>
+                        <ul class="nested ml-5">
+                            <li class="mindmap-item"><div class="p-2"><strong class="text-gray-800">국토 재편 ('5극 3특')</strong><span class="description block text-sm">5개 초광역권과 3개 특별자치도 체제로 균형발전의 토대를 마련하고 지역 주도 성장을 촉진합니다.</span></div></li>
+                            <li class="mindmap-item"><div class="p-2"><strong class="text-gray-800">지역별 특화산업 육성</strong><span class="description block text-sm">동남권(제조업), 서남권(AI·에너지), 대경권(첨단산업) 등 지역별 맞춤 전략으로 지역 경제를 활성화합니다.</span></div></li>
+                            <li class="mindmap-item"><div class="p-2"><strong class="text-gray-800">지역 정주여건 개선</strong><span class="description block text-sm">지역 거점 국립대를 육성하고 교육·생활·문화·관광 환경을 개선하여 수도권으로의 인구 유출을 막습니다.</span></div></li>
+                        </ul>
+                    </li>
+                     <!-- 과제 5 -->
+                    <li class="mindmap-item">
+                        <div class="caret flex items-center cursor-pointer p-2 rounded-lg hover:bg-green-50">
+                             <svg class="caret-icon w-5 h-5 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            <span class="font-medium text-gray-700">5. 공정과 상생의 시장질서 구축</span>
+                        </div>
+                        <ul class="nested ml-5">
+                            <li class="mindmap-item">
+                                <div class="caret flex items-center cursor-pointer p-2 rounded-lg hover:bg-purple-50">
+                                    <svg class="caret-icon w-5 h-5 text-purple-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                    <strong class="text-gray-800">공정경제 생태계</strong>
+                                </div>
+                                <ul class="nested ml-5">
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">대·중소기업 상생</strong><span class="description block text-sm">기술탈취 근절(K-디스커버리), 납품대금 연동제 안착, 협상력 제고를 통해 상생 협력 관계를 구축합니다.</span></div></li>
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">온라인 플랫폼 공정화</strong><span class="description block text-sm">독과점 방지 및 입점업체·소비자 보호를 위한 법제를 정비하고, 배달 시장의 공정 수수료 체계를 추진합니다.</span></div></li>
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">노동시장 개혁</strong><span class="description block text-sm">임금격차 및 이중구조 해소, '일터 권리' 보장, 주 4.5일제 추진을 통한 일과 삶의 균형을 실현합니다.</span></div></li>
+                                </ul>
+                            </li>
+                            <li class="mindmap-item">
+                                <div class="caret flex items-center cursor-pointer p-2 rounded-lg hover:bg-purple-50">
+                                    <svg class="caret-icon w-5 h-5 text-purple-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                    <strong class="text-gray-800">생산적 금융 및 지배구조</strong>
+                                </div>
+                                <ul class="nested ml-5">
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">공정한 자본시장</strong><span class="description block text-sm">주가조작 등 불공정거래에 '원스트라이크 아웃제'를 도입하고, 투자자 피해 구제를 위한 페어펀드를 추진합니다.</span></div></li>
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">합리적 기업지배구조</strong><span class="description block text-sm">이사의 충실의무 대상에 '주주'를 포함하고 물적분할 시 주주를 보호하여 코리아 디스카운트를 해소합니다.</span></div></li>
+                                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">생산적 금융으로 전환</strong><span class="description block text-sm">부동산·가계대출 쏠림을 완화하고, 중소·벤처기업으로 자금이 흐르도록 금융 시스템을 개혁합니다.</span></div></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- 성장 기반 -->
+            <li class="mindmap-item mb-2">
+                <div class="caret flex items-center cursor-pointer p-2 rounded-lg hover:bg-blue-50">
+                    <svg class="caret-icon w-5 h-5 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    <span class="font-semibold text-lg text-gray-700">성장 기반</span>
+                </div>
+                <ul class="nested ml-5">
+                    <li class="mindmap-item"><div class="p-2"><strong class="text-gray-800">국가 거버넌스 혁신</strong><span class="description block text-sm">이해관계 충돌을 해결하는 '조정자 국가'이자, 촘촘한 사회안전망을 제공하는 '보험 국가'로서의 역할을 강화합니다.</span></div></li>
+                    <li class="mindmap-item">
+                        <div class="caret flex items-center cursor-pointer p-2 rounded-lg hover:bg-purple-50">
+                            <svg class="caret-icon w-5 h-5 text-purple-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            <strong class="text-gray-800">제도개혁</strong>
+                        </div>
+                        <ul class="nested ml-5">
+                            <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">규제개혁</strong><span class="description block text-sm">네거티브 규제와 '메가 샌드박스'를 통해 신산업 분야의 혁신을 촉진합니다.</span></div></li>
+                            <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">금융개혁</strong><span class="description block text-sm">'국민펀드' 조성으로 첨단산업 투자를 지원하고, 금융감독체계를 개편하여 소비자 보호를 강화합니다.</span></div></li>
+                            <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">행정개혁</strong><span class="description block text-sm">문제해결형 스마트 정부로 전환하고, 데이터 기반의 전략적 재정 운용을 추진합니다.</span></div></li>
+                            <li class="mindmap-item"><div class="p-2"><strong class="text-gray-700">교육개혁</strong><span class="description block text-sm">AI 시대에 맞는 창의·융합형 인재를 양성하고, 전 국민 평생학습 체계를 구축합니다.</span></div></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        // 모든 caret(토글 버튼) 요소를 선택합니다.
+        const toggler = document.querySelectorAll(".caret");
+
+        // 각 토글 버튼에 클릭 이벤트를 추가합니다.
+        toggler.forEach(item => {
+            item.addEventListener("click", function() {
+                // 클릭된 요소의 부모에서 다음 .nested 요소를 찾습니다.
+                const nestedList = this.parentElement.querySelector(".nested");
+                if (nestedList) {
+                    // active 클래스를 토글하여 보이기/숨기기를 제어합니다.
+                    nestedList.classList.toggle("active");
+                    // caret-down 클래스를 토글하여 아이콘 방향을 변경합니다.
+                    this.classList.toggle("caret-down");
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
