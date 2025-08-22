@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>지방공무원 5급 승진역량평가 보고서 & 대화형 면접 전략 시뮬레이터</title>
+    <title>지방공무원 5급 승진역량평가 통합 준비 도구</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -25,335 +25,311 @@
         .starp-item { display: flex; align-items: center; gap: 1rem; }
         .starp-icon { flex-shrink: 0; width: 3rem; height: 3rem; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: white; }
         .starp-arrow { font-size: 2rem; color: #9ca3af; text-align: center; margin: -0.5rem 0; }
+        .tab { cursor: pointer; padding: 1rem 1.5rem; border-bottom: 4px solid transparent; transition: all 0.3s; }
+        .tab.active { border-color: #3b82f6; color: #2563eb; font-weight: 600; }
+        .page-content { display: none; }
+        .page-content.active { display: block; }
     </style>
 </head>
 <body class="bg-gray-100 text-slate-700">
 
-    <!-- 첫 번째 파일: 보고서 템플릿 -->
-    <div class="container mx-auto max-w-5xl p-4 sm:p-8 bg-white shadow-lg my-8 rounded-lg">
-        <header class="text-center mb-10 pb-6 border-b-2 border-gray-300">
-            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">지방공무원 5급 승진역량평가 보고서</h1>
-            <h2 class="text-2xl sm:text-3xl font-bold text-gray-700 mt-2">만능 작성 틀 (사회 분야)</h2>
-            <p class="mt-4 text-gray-600">복지, 안전, 환경 등 사회 분야 정책과제에 활용 가능한 반템플릿형 보고서 양식입니다.</p>
-        </header>
-
-        <div class="bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-lg mb-12">
-            <h3 class="font-bold text-lg mb-2">템플릿 활용 가이드</h3>
-            <p>이 템플릿은 보고서의 표준 구조에 따라 각 장별로 작성 지침을 제공합니다. <span class="placeholder">[ ]</span>로 표시된 부분은 주어진 자료와 상황에 맞게 채워야 할 내용입니다. 각 장의 역할을 이해하고, 예시와 추천 표현을 참고하여 논리적이고 설득력 있는 보고서를 작성해 보세요.</p>
+    <div class="container mx-auto max-w-5xl p-4 sm:p-8">
+        <!-- Tab Navigation -->
+        <div class="bg-white rounded-lg shadow-md mb-8">
+            <nav class="flex justify-center border-b">
+                <button id="tab-report" class="tab active">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    보고서 작성 템플릿
+                </button>
+                <button id="tab-interview" class="tab">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2V7a2 2 0 012-2h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 00.707.293H17z" /></svg>
+                    대화형 면접 시뮬레이터
+                </button>
+            </nav>
         </div>
 
-        <section class="mb-12">
-            <h2 class="text-2xl font-bold text-gray-800 border-l-4 border-blue-600 pl-4 mb-6">Ⅰ. 배경 및 필요성</h2>
-            <div class="section-box">
-                <div class="section-header"><h4 class="text-lg font-semibold text-gray-700">역할</h4></div>
-                <div class="section-content">
-                    <p class="text-gray-700">정책을 왜 지금 추진해야 하는지, 무엇을 목표로 하는지 설명하는 부분입니다. 문제 상황과 정책 필요성을 요약하여 보고서의 목적을 명확히 제시합니다.</p>
-                </div>
-            </div>
-            <div class="section-box">
-                <div class="section-header"><h4 class="text-lg font-semibold text-gray-700">예시 문장</h4></div>
-                <div class="section-content">
-                    <div class="example-box">
-                        <p class="mb-2">○ <span class="placeholder">[지자체명]</span>은 <span class="placeholder">[지역 특성 또는 최근 동향]</span>으로 <span class="placeholder">[문제상황]</span>이 심화되고 있다.</p>
-                        <p class="text-sm text-gray-600 pl-4 mb-2">예: “○ OO시는 인구 고령화와 1인 가구 증가로 독거노인 수가 매년 늘어나는 추세이다.” ※ 통계: <span class="placeholder">[연도]</span>년 독거노인 <span class="placeholder">[대상자 수]</span>명 (+<span class="placeholder">[전년 대비 %]</span> 증가).</p>
-                        <p class="mb-2">○ 그러나 <span class="placeholder">[현재 정책이나 대응의 한계]</span>로 <span class="placeholder">[부정적 결과/문제]</span>가 발생하고 있다.</p>
-                        <p class="text-sm text-gray-600 pl-4 mb-2">예: “○ 그러나 기존 지원체계가 수요자의 요구를 반영하지 못해 만족도가 낮고 고독사 사례가 증가하고 있다.” ※ 근거: 지원 만족도 <span class="placeholder">[만족 %]</span>% (만족), <span class="placeholder">[불만족 %]</span>% (불만족) 등 낮은 평가.</p>
-                        <p class="mb-2">○ 이에 <span class="placeholder">[지자체명]</span>은 <span class="placeholder">[궁극적 목표]</span>을 위한 <span class="placeholder">[정책/사업 방향]</span>을 마련하고자 한다.</p>
-                        <p class="text-sm text-gray-600 pl-4">예: “○ 이에, OO시는 복지 서비스 향상 및 고독사 예방을 위해 <span class="placeholder">[사업명]</span> 개선방안을 추진하고자 한다.”</p>
-                    </div>
-                </div>
-            </div>
-            <div class="section-box">
-                <div class="section-header"><h4 class="text-lg font-semibold text-gray-700">추천 워딩 패턴</h4></div>
-                <div class="section-content">
-                    <div class="wording-pattern">
-                        <ul class="space-y-2 list-disc list-inside">
-                            <li>“최근 들어 <span class="placeholder">[문제현상]</span>이 잇따라 발생하여 <span class="placeholder">[영향]</span>에 대한 우려가 커지고 있다.”</li>
-                            <li>“특히, <span class="placeholder">[연도]</span>년 <span class="placeholder">[지표명]</span>은 전국 평균 대비 △△% 수준으로 <span class="placeholder">[문제의 시급성]</span>이 드러났다.”</li>
-                            <li>“이러한 상황에도 불구하고 현행 <span class="placeholder">[제도/대응]</span>은 미흡한 실정이다.”</li>
-                            <li>“따라서 이 문제를 해결하지 않고서는 <span class="placeholder">[예상되는 부정적 결과]</span>가 우려되는 상황이다.”</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="note-box">
-                <h4 class="font-semibold text-yellow-800">유의사항</h4>
-                <ul class="mt-2 list-disc list-inside text-yellow-700 space-y-1">
-                    <li><strong>핵심 질문 답변:</strong> "왜 지금 이 문제인가?", "무엇을 목표로 하는가?"에 대한 답을 명확히 포함하세요.</li>
-                    <li><strong>데이터 활용:</strong> 최신 통계나 연구 결과를 인용하여 객관성과 신뢰도를 높이세요.</li>
-                    <li><strong>간결성:</strong> ½쪽 내외로 간략하게, 핵심 문제 위주로 작성하세요.</li>
-                    <li><strong>일관된 어조:</strong> 격식체(~한다, ~이다)를 사용하고, 배경은 현재 상황을 설명하므로 현재형으로 기술합니다.</li>
-                </ul>
-            </div>
-        </section>
+        <!-- Page 1: Report Template -->
+        <div id="page-report" class="page-content active">
+            <div class="bg-white shadow-lg rounded-lg p-4 sm:p-8">
+                <header class="text-center mb-10 pb-6 border-b-2 border-gray-300">
+                    <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">지방공무원 5급 승진역량평가 보고서</h1>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-gray-700 mt-2">만능 작성 틀 (사회 분야)</h2>
+                    <p class="mt-4 text-gray-600">복지, 안전, 환경 등 사회 분야 정책과제에 활용 가능한 반템플릿형 보고서 양식입니다.</p>
+                </header>
 
-        <section class="mb-12">
-            <h2 class="text-2xl font-bold text-gray-800 border-l-4 border-blue-600 pl-4 mb-6">Ⅱ. 현황 및 문제점</h2>
-            <div class="section-box">
-                <div class="section-header"><h4 class="text-lg font-semibold text-gray-700">역할</h4></div>
-                <div class="section-content">
-                    <p class="text-gray-700">정책 과제와 관련된 현재 실태와 핵심 문제를 분석합니다. 현황(성과/한계)을 간략히 짚고, 문제점을 원인별로 분류하여 서술합니다. 여기서 도출된 문제점은 3장 개선방안의 기반이 됩니다.</p>
+                <div class="bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-lg mb-12">
+                    <h3 class="font-bold text-lg mb-2">템플릿 활용 가이드</h3>
+                    <p>이 템플릿은 보고서의 표준 구조에 따라 각 장별로 작성 지침을 제공합니다. <span class="placeholder">[ ]</span>로 표시된 부분은 주어진 자료와 상황에 맞게 채워야 할 내용입니다. 각 장의 역할을 이해하고, 예시와 추천 표현을 참고하여 논리적이고 설득력 있는 보고서를 작성해 보세요.</p>
                 </div>
-            </div>
-            <div class="section-box">
-                <div class="section-header"><h4 class="text-lg font-semibold text-gray-700">예시 구조</h4></div>
-                <div class="section-content">
-                    <div class="example-box">
-                        <p class="font-semibold">□ <span class="placeholder">[현황 요약]</span></p>
-                        <p class="pl-4 mb-2">“□ <span class="placeholder">[연도]</span>년 <span class="placeholder">[사업명]</span> 추진 현황: 대상자 <span class="placeholder">[대상자 수]</span>명, 예산 <span class="placeholder">[##억]</span>원 투입”</p>
-                        <p class="pl-4 mb-2">○ (성과) △△ 서비스 제공으로 만족도 <span class="placeholder">[만족도]%</span> 달성, <span class="placeholder">[긍정적 효과]</span>도 나타남.</p>
-                        <p class="pl-4 mb-4">○ (한계) 다만 인력 부족과 예산 제약으로 <span class="placeholder">[서비스 질 저하]</span> 등의 한계가 나타남.</p>
-                        <p class="font-semibold">□ <span class="placeholder">[문제점 1: (예: 법령/제도 측면)]</span></p>
-                        <p class="pl-4 mb-2">“□ 관련 법령 및 제도 정비 부족으로 인한 <span class="placeholder">[문제현상]</span> 발생.”</p>
-                        <p class="pl-8 mb-2">○ (근거) 현행 법률에 <span class="placeholder">[필요 조항]</span> 부재 – 예: “생활관리사 배치 기준” 미규정 등.</p>
-                        <p class="pl-8 mb-4">○ (결과) 현장에서 관리 인력 확보가 어려워 서비스 공백이 발생한다.</p>
-                        <p class="font-semibold">□ <span class="placeholder">[문제점 2: (예: 재원/운영 측면)]</span></p>
-                        <p class="pl-4 mb-2">“□ 전문인력 및 예산 부족으로 <span class="placeholder">[문제현상]</span> 초래.”</p>
-                        <p class="pl-8 mb-2">○ (예산) 최근 예산 지원이 <span class="placeholder">[연도]</span>년 △△억 원 → <span class="placeholder">[연도]</span>년 △△억 원으로 정체.</p>
-                        <p class="pl-8 mb-4">○ (인력) 담당 인력 1인당 관리 대상 과다(<span class="placeholder">[대상자 수]</span>명/인)로 서비스 질 저하.</p>
-                        <p class="font-semibold">□ <span class="placeholder">[문제점 3: (예: 인식/참여 측면)]</span></p>
-                        <p class="pl-4 mb-2">“□ 홍보·교육 부족으로 국민 인식 저조 및 참여 미흡.”</p>
-                        <p class="pl-8 mb-2">○ 캠페인 부재로 정책 필요성에 대한 공감대 형성 미흡.</p>
-                        <p class="pl-8">○ 실제로, 관련 설문에서 ‘인지한다’ <span class="placeholder">[낮은 %]%</span>, ‘인지하지 못한다’ <span class="placeholder">[높은 %]%</span>로 조사됨.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="note-box">
-                <h4 class="font-semibold text-yellow-800">유의사항</h4>
-                <ul class="mt-2 list-disc list-inside text-yellow-700 space-y-1">
-                    <li><strong>문제-대안 연계:</strong> 여기서 제시한 문제점은 3장에서 반드시 해결책으로 이어져야 합니다.</li>
-                    <li><strong>원인과 현상 구분:</strong> "○○ 때문에 ○○ 문제가 발생한다"와 같이 원인과 결과를 명확히 서술하세요.</li>
-                    <li><strong>해결책 미기재:</strong> 이 장에서는 문제점만 분석하고, 해결방안은 3장에서 제시하세요.</li>
-                    <li><strong>문제 유형화:</strong> (제도), (재정), (운영) 등 문제점을 범주별로 묶어 체계적으로 제시하세요.</li>
-                    <li><strong>타당성:</strong> 정책적으로 중요하고 근본적인 문제를 선별하여 제시하세요.</li>
-                </ul>
-            </div>
-        </section>
 
-        <section class="mb-12">
-            <h2 class="text-2xl font-bold text-gray-800 border-l-4 border-blue-600 pl-4 mb-6">Ⅲ. 개선방안</h2>
-            <div class="section-box">
-                <div class="section-header"><h4 class="text-lg font-semibold text-gray-700">역할</h4></div>
-                <div class="section-content">
-                    <p class="text-gray-700">2장에서 도출된 문제점을 해결하기 위한 구체적인 정책 대안을 제시합니다. 법·제도, 예산, 사업 추진 등 다각적인 측면에서 실현 가능하고 효과적인 종합 대책을 마련합니다.</p>
-                </div>
-            </div>
-            <div class="section-box">
-                <div class="section-header"><h4 class="text-lg font-semibold text-gray-700">예시 구조 (분야별 분류)</h4></div>
-                <div class="section-content">
-                    <div class="example-box">
-                        <p class="font-semibold">□ <span class="placeholder">[개선방안 1: 법령 및 제도 개선]</span></p>
-                        <p class="pl-4 mb-2">“□ (법령) ‘<span class="placeholder">[가칭] 지원 조례</span>’ 제정을 통해 지자체의 지원 근거와 책무를 명확히 한다.”</p>
-                        <p class="pl-4 mb-4">“○ (제도) <span class="placeholder">[관련 지침/매뉴얼]</span>을 개정하여 서비스 품질 관리 기준을 마련한다.”</p>
-                        <p class="font-semibold">□ <span class="placeholder">[개선방안 2: 재정 확보 및 인력 확충]</span></p>
-                        <p class="pl-4 mb-2">“□ (예산) <span class="placeholder">[사업명]</span> 추진을 위해 시 예산 <span class="placeholder">[##억]</span>원 증액 및 국비 지원을 요청한다.”</p>
-                        <p class="pl-4 mb-4">“○ (인력) <span class="placeholder">[전문 인력]</span> <span class="placeholder">[##명]</span>을 신규 채용하고, 처우 개선을 통해 이직률을 감소시킨다.”</p>
-                        <p class="font-semibold">□ <span class="placeholder">[개선방안 3: 사업 추진 및 서비스 강화]</span></p>
-                        <p class="pl-4 mb-2">“□ (신규사업) <span class="placeholder">[핵심 사업명]</span>을 실시하여 <span class="placeholder">[기대효과]</span>를 도모한다.”</p>
-                        <p class="pl-8 mb-2">○ (기술활용) AI 기반 <span class="placeholder">[응급상황 감지 시스템]</span>을 구축하여 안전 공백을 최소화한다.</p>
-                        <p class="pl-8 mb-2">○ (협력강화) <span class="placeholder">[민간/지역사회 파트너]</span>와 협력하는 안전망을 구축한다.</p>
-                        <p class="pl-8">○ (교육·홍보) 시민 대상 <span class="placeholder">[인식 개선 캠페인]</span>을 <span class="placeholder">[주기]</span>별로 실시한다.</p>
+                <section class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-800 border-l-4 border-blue-600 pl-4 mb-6">Ⅰ. 배경 및 필요성</h2>
+                    <div class="section-box">
+                        <div class="section-header"><h4 class="text-lg font-semibold text-gray-700">역할</h4></div>
+                        <div class="section-content">
+                            <p class="text-gray-700">정책을 왜 지금 추진해야 하는지, 무엇을 목표로 하는지 설명하는 부분입니다. 문제 상황과 정책 필요성을 요약하여 보고서의 목적을 명확히 제시합니다.</p>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="wording-pattern">
-                <h4 class="font-semibold text-sky-800">추천 워딩 패턴</h4>
-                <ul class="mt-2 list-disc list-inside text-sky-700 space-y-1">
-                    <li><strong>수단+효과 구조:</strong> “○○을 통해 △△를 강화(개선/확대)한다” 형식으로 작성하세요.</li>
-                    <li><strong>적극적 동사 사용:</strong> “강화한다, 구축한다, 마련한다, 추진한다” 등 능동적 동사를 사용하세요.</li>
-                    <li><strong>구체성 부여:</strong> 시기, 대상, 규모, 주관 부서 등을 명시하여 실행 가능성을 높이세요.</li>
-                </ul>
-            </div>
-            <div class="note-box">
-                <h4 class="font-semibold text-yellow-800">유의사항</h4>
-                <ul class="mt-2 list-disc list-inside text-yellow-700 space-y-1">
-                    <li><strong>문제와 일치:</strong> 2장의 문제점에 대한 해결책만을 다루세요.</li>
-                    <li><strong>핵심 위주:</strong> 핵심 방안 3~5개 위주로 깊이 있게 설명하세요.</li>
-                    <li><strong>현실성 검토:</strong> 행정적, 재정적으로 실행 가능한 방안을 제시하세요.</li>
-                    <li><strong>미래형 어투:</strong> “~한다”, “~하도록 한다” 등 실행 의지를 나타내는 표현을 사용하세요.</li>
-                </ul>
-            </div>
-        </section>
-
-        <section>
-            <h2 class="text-2xl font-bold text-gray-800 border-l-4 border-blue-600 pl-4 mb-6">Ⅳ. 향후 추진계획</h2>
-            <div class="section-box">
-                <div class="section-header"><h4 class="text-lg font-semibold text-gray-700">역할</h4></div>
-                <div class="section-content">
-                    <p class="text-gray-700">3장에서 제시한 개선방안을 어떻게 실행할지 구체적인 일정과 절차(Timeline)를 제시합니다. 독자가 추진과정을 한눈에 이해할 수 있도록 단계별로 정리합니다.</p>
-                </div>
-            </div>
-            <div class="section-box">
-                <div class="section-header"><h4 class="text-lg font-semibold text-gray-700">예시 구조 (시간순)</h4></div>
-                <div class="section-content">
-                    <div class="example-box">
-                        <ul class="space-y-3">
-                            <li><strong class="text-gray-700">(<span class="placeholder">[연도]</span>.<span class="placeholder">[월]</span>)</strong> : TF팀 구성 및 민·관 협의체 발족 등 추진체계 정비</li>
-                            <li><strong class="text-gray-700">(<span class="placeholder">[연도]</span>.<span class="placeholder">[월]</span>)</strong> : 세부 실행계획 수립 및 관계부처 협의, 의견수렴</li>
-                            <li><strong class="text-gray-700">(<span class="placeholder">[연도]</span>.<span class="placeholder">[월]</span>)</strong> : <span class="placeholder">[법령명]</span> 개정(안) 발의 및 차년도 예산안 편성</li>
-                            <li><strong class="text-gray-700">(<span class="placeholder">[연도]</span>.<span class="placeholder">[월]</span>)</strong> : 시범사업 실시(<span class="placeholder">[대상 지역]</span>) 및 대국민 홍보</li>
-                            <li><strong class="text-gray-700">(<span class="placeholder">[연도]</span>.<span class="placeholder">[월]</span>)</strong> : 사업 전면 시행 및 정기 모니터링 시작 (분기별 1회)</li>
-                            <li><strong class="text-gray-700">(<span class="placeholder">[연도]</span>~)</strong> : 추진성과 점검·평가 및 차기 계획 환류</li>
-                        </ul>
+                    <div class="section-box">
+                        <div class="section-header"><h4 class="text-lg font-semibold text-gray-700">예시 문장</h4></div>
+                        <div class="section-content">
+                            <div class="example-box">
+                                <p class="mb-2">○ <span class="placeholder">[지자체명]</span>은 <span class="placeholder">[지역 특성 또는 최근 동향]</span>으로 <span class="placeholder">[문제상황]</span>이 심화되고 있다.</p>
+                                <p class="text-sm text-gray-600 pl-4 mb-2">예: “○ OO시는 인구 고령화와 1인 가구 증가로 독거노인 수가 매년 늘어나는 추세이다.” ※ 통계: <span class="placeholder">[연도]</span>년 독거노인 <span class="placeholder">[대상자 수]</span>명 (+<span class="placeholder">[전년 대비 %]</span> 증가).</p>
+                                <p class="mb-2">○ 그러나 <span class="placeholder">[현재 정책이나 대응의 한계]</span>로 <span class="placeholder">[부정적 결과/문제]</span>가 발생하고 있다.</p>
+                                <p class="text-sm text-gray-600 pl-4 mb-2">예: “○ 그러나 기존 지원체계가 수요자의 요구를 반영하지 못해 만족도가 낮고 고독사 사례가 증가하고 있다.” ※ 근거: 지원 만족도 <span class="placeholder">[만족 %]</span>% (만족), <span class="placeholder">[불만족 %]</span>% (불만족) 등 낮은 평가.</p>
+                                <p class="mb-2">○ 이에 <span class="placeholder">[지자체명]</span>은 <span class="placeholder">[궁극적 목표]</span>을 위한 <span class="placeholder">[정책/사업 방향]</span>을 마련하고자 한다.</p>
+                                <p class="text-sm text-gray-600 pl-4">예: “○ 이에, OO시는 복지 서비스 향상 및 고독사 예방을 위해 <span class="placeholder">[사업명]</span> 개선방안을 추진하고자 한다.”</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="note-box">
-                <h4 class="font-semibold text-yellow-800">유의사항</h4>
-                <ul class="mt-2 list-disc list-inside text-yellow-700 space-y-1">
-                    <li><strong>3장과 연계:</strong> 3장의 모든 개선방안이 실행 계획에 포함되도록 하세요.</li>
-                    <li><strong>현실적인 일정:</strong> 행정 절차 소요 기간을 감안하여 현실적인 타임라인을 수립하세요.</li>
-                    <li><strong>간결성:</strong> 주요 마일스톤 위주로 간결하게 작성하세요.</li>
-                    <li><strong>추진주체 언급:</strong> 주관 부서나 협력 기관을 명시하여 계획의 구체성을 높이세요.</li>
-                </ul>
-            </div>
-        </section>
+                </section>
 
-        <footer class="mt-16 pt-8 border-t-2 border-gray-300">
-            <p class="text-center text-gray-600">
-                본 템플릿을 기반으로 주어진 자료와 정책적 상상력을 더하여, 자신만의 논리적이고 설득력 있는 보고서를 완성하시기 바랍니다.
-            </p>
-        </footer>
+                <section class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-800 border-l-4 border-blue-600 pl-4 mb-6">Ⅱ. 현황 및 문제점</h2>
+                    <div class="section-box">
+                        <div class="section-header"><h4 class="text-lg font-semibold text-gray-700">역할</h4></div>
+                        <div class="section-content">
+                            <p class="text-gray-700">정책 과제와 관련된 현재 실태와 핵심 문제를 분석합니다. 현황(성과/한계)을 간략히 짚고, 문제점을 원인별로 분류하여 서술합니다. 여기서 도출된 문제점은 3장 개선방안의 기반이 됩니다.</p>
+                        </div>
+                    </div>
+                     <div class="section-box">
+                        <div class="section-header"><h4 class="text-lg font-semibold text-gray-700">예시 구조</h4></div>
+                        <div class="section-content">
+                            <div class="example-box">
+                                <p class="font-semibold">□ <span class="placeholder">[현황 요약]</span></p>
+                                <p class="pl-4 mb-2">“□ <span class="placeholder">[연도]</span>년 <span class="placeholder">[사업명]</span> 추진 현황: 대상자 <span class="placeholder">[대상자 수]</span>명, 예산 <span class="placeholder">[##억]</span>원 투입”</p>
+                                <p class="pl-4 mb-2">○ (성과) △△ 서비스 제공으로 만족도 <span class="placeholder">[만족도]%</span> 달성, <span class="placeholder">[긍정적 효과]</span>도 나타남.</p>
+                                <p class="pl-4 mb-4">○ (한계) 다만 인력 부족과 예산 제약으로 <span class="placeholder">[서비스 질 저하]</span> 등의 한계가 나타남.</p>
+                                <p class="font-semibold">□ <span class="placeholder">[문제점 1: (예: 법령/제도 측면)]</span></p>
+                                <p class="pl-4 mb-2">“□ 관련 법령 및 제도 정비 부족으로 인한 <span class="placeholder">[문제현상]</span> 발생.”</p>
+                                <p class="pl-8 mb-4">○ (결과) 현장에서 관리 인력 확보가 어려워 서비스 공백이 발생한다.</p>
+                                <p class="font-semibold">□ <span class="placeholder">[문제점 2: (예: 재원/운영 측면)]</span></p>
+                                <p class="pl-4 mb-2">“□ 전문인력 및 예산 부족으로 <span class="placeholder">[문제현상]</span> 초래.”</p>
+                                <p class="pl-8 mb-4">○ (인력) 담당 인력 1인당 관리 대상 과다(<span class="placeholder">[대상자 수]</span>명/인)로 서비스 질 저하.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-800 border-l-4 border-blue-600 pl-4 mb-6">Ⅲ. 개선방안</h2>
+                    <div class="section-box">
+                        <div class="section-header"><h4 class="text-lg font-semibold text-gray-700">역할</h4></div>
+                        <div class="section-content">
+                            <p class="text-gray-700">2장에서 도출된 문제점을 해결하기 위한 구체적인 정책 대안을 제시합니다. 법·제도, 예산, 사업 추진 등 다각적인 측면에서 실현 가능하고 효과적인 종합 대책을 마련합니다.</p>
+                        </div>
+                    </div>
+                    <div class="section-box">
+                        <div class="section-header"><h4 class="text-lg font-semibold text-gray-700">예시 구조 (분야별 분류)</h4></div>
+                        <div class="section-content">
+                            <div class="example-box">
+                                <p class="font-semibold">□ <span class="placeholder">[개선방안 1: 법령 및 제도 개선]</span></p>
+                                <p class="pl-4 mb-4">“○ (제도) <span class="placeholder">[관련 지침/매뉴얼]</span>을 개정하여 서비스 품질 관리 기준을 마련한다.”</p>
+                                <p class="font-semibold">□ <span class="placeholder">[개선방안 2: 재정 확보 및 인력 확충]</span></p>
+                                <p class="pl-4 mb-4">“○ (인력) <span class="placeholder">[전문 인력]</span> <span class="placeholder">[##명]</span>을 신규 채용하고, 처우 개선을 통해 이직률을 감소시킨다.”</p>
+                                <p class="font-semibold">□ <span class="placeholder">[개선방안 3: 사업 추진 및 서비스 강화]</span></p>
+                                <p class="pl-8 mb-2">○ (기술활용) AI 기반 <span class="placeholder">[응급상황 감지 시스템]</span>을 구축하여 안전 공백을 최소화한다.</p>
+                                <p class="pl-8">○ (교육·홍보) 시민 대상 <span class="placeholder">[인식 개선 캠페인]</span>을 <span class="placeholder">[주기]</span>별로 실시한다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-bold text-gray-800 border-l-4 border-blue-600 pl-4 mb-6">Ⅳ. 향후 추진계획</h2>
+                     <div class="section-box">
+                        <div class="section-header"><h4 class="text-lg font-semibold text-gray-700">역할</h4></div>
+                        <div class="section-content">
+                            <p class="text-gray-700">3장에서 제시한 개선방안을 어떻게 실행할지 구체적인 일정과 절차(Timeline)를 제시합니다. 독자가 추진과정을 한눈에 이해할 수 있도록 단계별로 정리합니다.</p>
+                        </div>
+                    </div>
+                    <div class="section-box">
+                        <div class="section-header"><h4 class="text-lg font-semibold text-gray-700">예시 구조 (시간순)</h4></div>
+                        <div class="section-content">
+                            <div class="example-box">
+                                <ul class="space-y-3">
+                                    <li><strong class="text-gray-700">(<span class="placeholder">[연도]</span>.<span class="placeholder">[월]</span>)</strong> : TF팀 구성 및 민·관 협의체 발족 등 추진체계 정비</li>
+                                    <li><strong class="text-gray-700">(<span class="placeholder">[연도]</span>.<span class="placeholder">[월]</span>)</strong> : 세부 실행계획 수립 및 관계부처 협의, 의견수렴</li>
+                                    <li><strong class="text-gray-700">(<span class="placeholder">[연도]</span>.<span class="placeholder">[월]</span>)</strong> : 시범사업 실시(<span class="placeholder">[대상 지역]</span>) 및 대국민 홍보</li>
+                                    <li><strong class="text-gray-700">(<span class="placeholder">[연도]</span>~)</strong> : 추진성과 점검·평가 및 차기 계획 환류</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <footer class="mt-16 pt-8 border-t-2 border-gray-300">
+                    <p class="text-center text-gray-600">본 템플릿을 기반으로 주어진 자료와 정책적 상상력을 더하여, 자신만의 논리적이고 설득력 있는 보고서를 완성하시기 바랍니다.</p>
+                </footer>
+            </div>
+        </div>
+
+        <!-- Page 2: Interview Simulator -->
+        <div id="page-interview" class="page-content">
+            <div class="container mx-auto">
+                <header class="text-center my-10">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-[#2c3e50]">역량평가 합격을 위한</h1>
+                    <h2 class="text-3xl md:text-4xl font-bold text-[#3498db]">대화형 면접 전략 시뮬레이터</h2>
+                    <p class="mt-4 text-slate-600 max-w-3xl mx-auto">본 시뮬레이터는 실제 면접 상황에서 사무관님의 경험과 역량을 가장 빛나게 만들어 줄 전략적 답변 체계를 훈련하는 데 목적이 있습니다.</p>
+                </header>
+
+                <!-- Model Answer Principles -->
+                <section class="bg-white p-6 md:p-8 rounded-2xl shadow-lg mb-12">
+                     <h3 class="text-2xl font-bold text-center text-slate-800 mb-6 border-b pb-4">모범 답변 작성 4대 원칙</h3>
+                     <div class="space-y-6 text-slate-700">
+                        <div>
+                            <h4 class="text-lg font-bold text-blue-600 mb-2">1. STAR+P 구조 적용</h4>
+                            <ul class="space-y-2 list-disc list-inside pl-2">
+                                <li><strong>S (Situation):</strong> 언제, 어디서, 어떤 업무를 하고 있었는지 구체적인 상황을 제시합니다.</li>
+                                <li><strong>T (Task/Problem):</strong> 해결해야 할 과제나 발생한 문제 상황을 명확하게 설명합니다. 문제의 심각성이나 어려움을 강조하여 전투적인 서술을 합니다. (예: "예산 전액 삭감으로 사업 좌초 위기였습니다.")</li>
+                                <li><strong>A (Action & My Role):</strong> 문제를 해결하기 위해 '내가 주도적으로' 수행한 구체적인 행동과 역할을 상세히 기술합니다. (예: "제가 직접 관련 부서 실무자들을 일일이 찾아다니며 설득 작업을 시작했습니다.")</li>
+                                <li><strong>R (Result):</strong> 행동의 결과를 구체적인 수치, 긍정적인 반응, 가시적인 변화로 명확하게 제시합니다. (예: "그 결과, 삭감되었던 예산의 50%를 복원했으며, 민원 만족도가 전년 대비 20% 상승했습니다.")</li>
+                                <li><strong>P (Point/Perspective):</strong> 해당 경험을 통해 배우고 느낀 점, 그리고 이를 향후 공직 생활이나 다른 업무에 어떻게 적용하여 발전시킬 것인지에 대한 포부를 밝히며 마무리합니다.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-blue-600 mb-2">2. 두괄식 결론 제시</h4>
+                            <p class="pl-2">답변 시작 시, "네, 제가 직접 기획하고 주도했던 ○○ 사업 경험에 대해 말씀드리겠습니다." 와 같이 결론을 먼저 명확하게 제시합니다.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-blue-600 mb-2">3. 책임감 있는 자세</h4>
+                            <p class="pl-2">만약 실패나 실수의 경험이라면, 이를 회피하지 않고 솔직하게 인정하되, 그 과정에서 무엇을 배웠고 어떻게 개선했는지 '성장의 경험'으로 풀어내야 합니다.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-blue-600 mb-2">4. 평가지표 기반 답변</h4>
+                             <ul class="space-y-2 list-disc list-inside pl-2">
+                                <li><strong>성실성 및 적극성:</strong> 업무에 대한 열정과 헌신적인 태도를 보여줍니다.</li>
+                                <li><strong>조직관리 및 소통:</strong> 중간 관리자로서의 조직 관리 및 원활한 소통 능력을 어필합니다.</li>
+                                <li><strong>공직관 및 청렴도:</strong> 국민의 입장에서 공정하게 업무를 처리하는 봉사정신과 윤리의식을 강조합니다.</li>
+                                <li><strong>혁신적 포용교육의 이해 (광주교육청):</strong> 광주교육비전의 목표와 과제에 대한 이해도를 드러냅니다.</li>
+                            </ul>
+                        </div>
+                     </div>
+                </section>
+
+                <section class="bg-white p-6 md:p-8 rounded-2xl shadow-lg mb-12">
+                    <h3 class="text-2xl font-bold text-center text-slate-800 mb-4">합격 답변의 5대 핵심 역량</h3>
+                    <p class="text-center text-slate-600 mb-6">최고의 답변은 논리, 경험, 공직가치, 자신감, 리더십이 조화롭게 통합될 때 완성됩니다.</p>
+                    <div class="chart-container">
+                        <canvas id="competencyPillarsChart"></canvas>
+                    </div>
+                </section>
+
+                <section>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div id="card-1" class="card bg-white p-8 rounded-2xl shadow-md cursor-pointer">
+                            <h3 class="text-2xl font-bold text-slate-800">리더십 / 조직관리</h3>
+                            <p class="text-slate-600 mt-2">팀워크, 갈등 관리, 비전 제시 등 조직을 이끄는 리더로서의 역량을 증명하는 질문 유형입니다.</p>
+                        </div>
+                        <div id="card-2" class="card bg-white p-8 rounded-2xl shadow-md cursor-pointer">
+                            <h3 class="text-2xl font-bold text-slate-800">갈등 조정 / 민원 해결</h3>
+                            <p class="text-slate-600 mt-2">부서 간 이기주의, 악성 민원 등 복잡한 문제 상황에서 원칙과 소통으로 해결책을 찾는 능력을 평가합니다.</p>
+                        </div>
+                        <div id="card-3" class="card bg-white p-8 rounded-2xl shadow-md cursor-pointer">
+                            <h3 class="text-2xl font-bold text-slate-800">장점 / 단점</h3>
+                            <p class="text-slate-600 mt-2">자신에 대한 객관적 이해와 성장 가능성을 평가합니다. 장점은 성과로, 단점은 개선 노력으로 보여줘야 합니다.</p>
+                        </div>
+                        <div id="card-4" class="card bg-white p-8 rounded-2xl shadow-md cursor-pointer">
+                            <h3 class="text-2xl font-bold text-slate-800">공직가치 / 적극행정</h3>
+                            <p class="text-slate-600 mt-2">국민에 대한 봉사, 청렴, 책임 등 공직자로서의 핵심 가치와 적극적인 자세를 평가합니다.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <footer class="text-center mt-12 py-6 border-t border-slate-300">
+                    <p class="text-slate-500">카드를 클릭하여 각 주제별 답변 전략과 시뮬레이션을 확인하십시오.</p>
+                </footer>
+            </div>
+        </div>
     </div>
 
-    <!-- 두 번째 파일: 대화형 면접 전략 시뮬레이터 -->
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
-        <header class="text-center my-10">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-[#2c3e50]">역량평가 합격을 위한</h1>
-            <h2 class="text-3xl md:text-4xl font-bold text-[#3498db]">대화형 면접 전략 시뮬레이터</h2>
-            <p class="mt-4 text-slate-600 max-w-3xl mx-auto">
-                본 시뮬레이터는 단순 정보 제공을 넘어, 실제 면접 상황에서 사무관님의 경험과 역량을 가장 빛나게 만들어 줄 전략적 답변 체계를 훈련하는 데 목적이 있습니다.
-            </p>
-        </header>
-
-        <section class="bg-white p-6 md:p-8 rounded-2xl shadow-lg mb-12">
-            <h3 class="text-2xl font-bold text-center text-slate-800 mb-4">합격 답변의 5대 핵심 역량</h3>
-            <p class="text-center text-slate-600 mb-6">최고의 답변은 논리, 경험, 공직가치, 자신감, 리더십이 조화롭게 통합될 때 완성됩니다. 현재 어떤 역량에 더 집중해야 할지 스스로 진단해 보십시오.</p>
-            <div class="chart-container">
-                <canvas id="competencyPillarsChart"></canvas>
-            </div>
-        </section>
-
-        <section>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div id="card-1" class="card bg-white p-8 rounded-2xl shadow-md cursor-pointer">
-                    <div class="flex items-center mb-4">
-                        <div class="p-3 rounded-full bg-blue-100 mr-4">
-                            <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                        </div>
-                        <h3 class="text-2xl font-bold text-slate-800">리더십 / 조직관리</h3>
-                    </div>
-                    <p class="text-slate-600">팀워크, 갈등 관리, 비전 제시 등 조직을 이끄는 리더로서의 역량을 증명하는 질문 유형입니다. '함께 성장하는 리더'의 모습을 보여주는 것이 핵심입니다.</p>
-                </div>
-                <div id="card-2" class="card bg-white p-8 rounded-2xl shadow-md cursor-pointer">
-                    <div class="flex items-center mb-4">
-                        <div class="p-3 rounded-full bg-purple-100 mr-4">
-                            <svg class="w-8 h-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.546-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </div>
-                        <h3 class="text-2xl font-bold text-slate-800">갈등 조정 / 민원 해결</h3>
-                    </div>
-                    <p class="text-slate-600">부서 간 이기주의, 악성 민원 등 복잡한 문제 상황에서 원칙과 소통으로 해결책을 찾는 '현명한 해결사'로서의 능력을 평가합니다.</p>
-                </div>
-                <div id="card-3" class="card bg-white p-8 rounded-2xl shadow-md cursor-pointer">
-                    <div class="flex items-center mb-4">
-                        <div class="p-3 rounded-full bg-emerald-100 mr-4">
-                            <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        </div>
-                        <h3 class="text-2xl font-bold text-slate-800">장점 / 단점</h3>
-                    </div>
-                    <p class="text-slate-600">자신에 대한 객관적 이해와 성장 가능성을 평가합니다. 장점은 성과로 증명하고, 단점은 개선 노력으로 보여주는 영리한 전략이 필요합니다.</p>
-                </div>
-                <div id="card-4" class="card bg-white p-8 rounded-2xl shadow-md cursor-pointer">
-                    <div class="flex items-center mb-4">
-                        <div class="p-3 rounded-full bg-amber-100 mr-4">
-                           <svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                        </div>
-                        <h3 class="text-2xl font-bold text-slate-800">공직가치 / 적극행정</h3>
-                    </div>
-                    <p class="text-slate-600">국민에 대한 봉사, 청렴, 책임 등 공직자로서의 핵심 가치와 규정 뒤에 숨지 않고 문제를 해결하려는 적극적인 자세를 평가합니다.</p>
-                </div>
-            </div>
-        </section>
-
-        <footer class="text-center mt-12 py-6 border-t border-slate-300">
-            <p class="text-slate-500">카드를 클릭하여 각 주제별 답변 전략과 시뮬레이션을 확인하십시오.</p>
-        </footer>
-    </div>
-
-    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4">
+    <!-- Modal for Interview Simulator -->
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl modal-content">
             <div id="modal-body" class="p-8"></div>
         </div>
     </div>
 
     <script>
-    const data = {
-        "1": {
-            title: "리더십 / 조직관리",
-            strategy: "'소통'과 '솔선수범'을 키워드로 삼아, '함께 성장하는 리더'의 모습을 보여주십시오. 추상적인 리더십 이론이 아닌, 구체적인 경험과 철학을 담아내는 것이 핵심입니다.",
-            example: {
-                intro: "제가 생각하는 바람직한 리더십은 **'따뜻한 전문가'**가 되는 것이라고 생각합니다.",
-                s: "과거 ○○ 업무 추진 시, 신구 세대 간의 업무 방식 차이와 소통 부족으로 팀워크가 저하되고 프로젝트 진행이 더딘 상황이었습니다.",
-                t: "단순히 업무를 지시하는 것을 넘어, 팀원들의 자발적인 참여를 이끌어내고 세대 간의 간극을 메워 조직의 시너지를 창출하는 것이 시급한 과제였습니다.",
-                a: "저는 두 가지를 주도적으로 실행했습니다. 첫째, '리버스 멘토링'을 제안하여 MZ세대 후배가 선배에게 최신 IT 기술을 알려주고, 선배는 후배에게 업무 노하우를 전수하는 자리를 만들었습니다. 둘째, 매주 금요일 '티타임'을 정기적으로 열어 업무 외적인 이야기를 나누며 서로를 이해하는 시간을 가졌습니다. 이 과정에서 저는 지시자가 아닌, 양측의 의견을 경청하고 조율하는 '퍼실리테이터' 역할을 했습니다.",
-                r: "그 결과, 팀 내 소통량이 눈에 띄게 증가했고, 서로의 강점을 활용하면서 업무 효율이 30% 이상 향상되었습니다. 특히 팀원들 스스로 새로운 아이디어를 제안하는 긍정적인 문화가 만들어졌습니다.",
-                p: "이 경험을 통해 진정한 리더십은 권위가 아닌 신뢰에서 나오며, 수평적 소통이 조직의 잠재력을 최대로 이끌어낸다는 것을 배웠습니다. 사무관이 되어서도 구성원 개개인을 존중하며 함께 성장하는 조직을 만들고 싶습니다."
-            }
-        },
-        "2": {
-            title: "갈등 조정 / 민원 해결",
-            strategy: "'회피'가 아닌 '정면 돌파'의 자세를 보여주는 것이 중요합니다. 문제의 본질을 파악하고, 원칙을 지키면서도 상대방을 설득하는 '현명한 해결사'의 이미지를 구축하십시오.",
-            example: {
-                intro: "네, 갈등 상황에서 가장 중요한 것은 문제의 본질을 정확히 파악하고, 원칙을 기반으로 진정성 있게 소통하는 자세라고 생각합니다.",
-                s: "○○ 사업 추진 시, 예산 배분을 두고 A부서와 B부서의 이해관계가 첨예하게 대립하여 사업이 장기간 표류하는 위기 상황이었습니다.",
-                t: "양측의 감정적 대립을 해소하고, 기관 전체의 이익이라는 공동의 목표 아래 합의점을 찾아 사업을 정상화시키는 것이 핵심 과제였습니다.",
-                a: "저는 먼저 양측 부서장과 실무진을 각각 1:1로 만나 각자의 진짜 속내와 우려 사항을 경청했습니다. 그 후, 제가 직접 관련 데이터를 분석하고 타 기관 사례를 조사하여, 양측의 요구를 일부 수용하면서도 기관 전체의 효율을 높일 수 있는 '제3의 대안'을 구체적인 보고서로 작성하여 제시했습니다. 이 과정에서 저는 중재자로서 양측의 입장을 투명하게 공유하고, 감정이 아닌 데이터에 기반한 토론을 이끌었습니다.",
-                r: "초기에는 반발도 있었지만, 제 보고서의 객관성과 합리성을 바탕으로 설득을 거듭한 결과, 마침내 양측의 합의를 이끌어내 사업을 성공적으로 완수할 수 있었습니다. 이는 부서 간 협력의 좋은 선례가 되었습니다.",
-                p: "복잡한 갈등일수록 원칙과 데이터, 그리고 상대방의 입장을 존중하는 진심이 가장 강력한 해결책임을 배웠습니다. 사무관으로서 앞으로도 조직 내외의 갈등을 회피하지 않고, 적극적으로 조정하며 시너지를 창출하는 역할을 하겠습니다."
-            }
-        },
-        "3": {
-            title: "장점 / 단점",
-            strategy: "장점은 '성과'와 연결하고, 단점은 '개선 노력'을 통해 '성장 가능성'으로 바꾸어 말하는 것이 핵심입니다. 솔직하되, 영리하게 포장해야 합니다.",
-            example: {
-                intro: "저의 가장 큰 장점은 **'끝까지 파고들어 해결책을 찾아내는 끈기'**입니다. 반면, 보완할 점은 가끔 지나치게 몰입하여 넓은 시야를 놓칠 때가 있다는 점입니다.",
-                s: "장점의 경우, 지난 ○○ 업무에서 전례 없는 예산 부족 문제에 부딪혔습니다. 단점의 경우, 해당 업무에 몰입하다 보니 다른 팀원들의 업무 진행 상황을 세심하게 챙기지 못할 뻔한 적이 있습니다.",
-                t: "장점과 관련해서는 사업 좌초 위기를 막을 대체 재원을 찾는 것이, 단점과 관련해서는 개인의 성과가 아닌 팀의 성과를 위해 시야를 넓히는 것이 과제였습니다.",
-                a: "장점을 발휘하여, 관련 조례와 지난 5년간의 예산 집행 내역, 타 기관 성공 사례를 밤새워 분석했습니다. 그 결과 숨어있던 예비비를 활용할 수 있는 법적 근거를 찾아내 상급자를 설득했습니다. 단점을 보완하기 위해, 저는 2년 전부터 중요한 업무를 시작할 때 반드시 '공동 체크리스트'를 구글 시트로 만들어 팀원들과 공유하고, 매일 아침 '10분 스탠딩 미팅'을 주도하여 전체 진행 상황을 파악하는 습관을 들였습니다.",
-                r: "장점 덕분에 사업은 성공적으로 완수되었고, 이는 적극행정 우수사례로 선정되었습니다. 단점 보완 노력을 통해 팀의 업무 병목 현상을 사전에 방지할 수 있었고, 동료들로부터 '숲을 함께 보려 노력해줘서 고맙다'는 피드백을 받았습니다.",
-                p: "저는 저의 강점인 끈기와 책임감을 더욱 발전시키고, 단점은 체계적인 노력을 통해 보완하여 어떤 위기 상황에서도 안정적으로 성과를 내는, 동료와 함께 성장하는 유능한 사무관이 되겠습니다."
-            }
-        },
-        "4": {
-            title: "공직가치 / 적극행정",
-            strategy: "'국민에 대한 봉사'와 '책임감'을 강조하며, 규정과 현실 사이에서 창의적인 해결책을 찾으려 노력한 경험을 제시하십시오.",
-            example: {
-                intro: "공무원에게 가장 중요한 덕목은 **'국민의 눈높이에서 문제를 바라보는 공감 능력'**과 **'결과에 책임지는 용기'**라고 생각합니다.",
-                s: "과거 한 민원인께서 규정상으로는 지원이 어려운 사안에 대해 지속적으로 도움을 요청하셨습니다. 첫 검토 결과는 '규정상 불가'였습니다.",
-                t: "단순히 규정 뒤에 숨어 민원인의 절박함을 외면하는 것이 아니라, 법의 테두리 안에서 어떻게든 도울 방법을 찾아내는 것이 공무원의 진정한 역할이라고 생각했습니다.",
-                a: "저는 책상에 앉아있기보다 직접 발로 뛰었습니다. 관련 법규와 지침을 원점부터 다시 검토하는 한편, 타 지자체 담당자 10여 명에게 직접 연락하여 유사 지원 사례가 있었는지 확인했습니다. 그 과정에서 법의 테두리 안에서 유연하게 해석할 수 있는 조항을 발견했고, 이를 근거로 법률 자문을 구하고 상급자를 설득하여 해당 민원인께 최소한의 도움이라도 드릴 수 있는 대안을 마련했습니다.",
-                r: "비록 민원인이 원했던 100%의 해결은 아니었지만, 저의 노력을 통해 일부나마 문제를 해결할 수 있었고, 민원인께서도 '나의 일처럼 애써주어 고맙다'는 말씀을 해주셨을 때 큰 보람을 느꼈습니다.",
-                p: "이 경험은 저에게 '안된다고 생각하기 전에, 된다는 마음으로 한 번 더 파고들자'는 적극행정의 교훈을 주었습니다. 사무관으로서 앞으로도 규정 뒤에 숨지 않고, 국민의 입장에서 해결책을 찾기 위해 발로 뛰는 공무원이 되겠습니다."
-            }
-        }
-    };
-
-    const colors = {
-        s: '#3498db',
-        t: '#f1c40f',
-        a: '#e74c3c',
-        r: '#2ecc71',
-        p: '#9b59b6'
-    };
-
     document.addEventListener('DOMContentLoaded', () => {
+        // --- Tab Navigation Logic ---
+        const tabs = document.querySelectorAll('.tab');
+        const pages = document.querySelectorAll('.page-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Deactivate all tabs and pages
+                tabs.forEach(t => t.classList.remove('active'));
+                pages.forEach(p => p.classList.remove('active'));
+
+                // Activate clicked tab and corresponding page
+                tab.classList.add('active');
+                const targetPageId = 'page-' + tab.id.split('-')[1];
+                document.getElementById(targetPageId).classList.add('active');
+            });
+        });
+
+        // --- Interview Simulator Logic ---
+        const interviewData = {
+            "1": {
+                title: "리더십 / 조직관리",
+                strategy: "'소통'과 '솔선수범'을 키워드로 삼아, '함께 성장하는 리더'의 모습을 보여주십시오. 추상적인 리더십 이론이 아닌, 구체적인 경험과 철학을 담아내는 것이 핵심입니다.",
+                example: {
+                    intro: "제가 생각하는 바람직한 리더십은 **'따뜻한 전문가'**가 되는 것이라고 생각합니다.",
+                    s: "과거 ○○ 업무 추진 시, 신구 세대 간의 업무 방식 차이와 소통 부족으로 팀워크가 저하되고 프로젝트 진행이 더딘 상황이었습니다.",
+                    t: "단순히 업무를 지시하는 것을 넘어, 팀원들의 자발적인 참여를 이끌어내고 세대 간의 간극을 메워 조직의 시너지를 창출하는 것이 시급한 과제였습니다.",
+                    a: "저는 두 가지를 주도적으로 실행했습니다. 첫째, '리버스 멘토링'을 제안하여 MZ세대 후배가 선배에게 최신 IT 기술을 알려주고, 선배는 후배에게 업무 노하우를 전수하는 자리를 만들었습니다. 둘째, 매주 금요일 '티타임'을 정기적으로 열어 업무 외적인 이야기를 나누며 서로를 이해하는 시간을 가졌습니다. 이 과정에서 저는 지시자가 아닌, 양측의 의견을 경청하고 조율하는 '퍼실리테이터' 역할을 했습니다.",
+                    r: "그 결과, 팀 내 소통량이 눈에 띄게 증가했고, 서로의 강점을 활용하면서 업무 효율이 30% 이상 향상되었습니다. 특히 팀원들 스스로 새로운 아이디어를 제안하는 긍정적인 문화가 만들어졌습니다.",
+                    p: "이 경험을 통해 진정한 리더십은 권위가 아닌 신뢰에서 나오며, 수평적 소통이 조직의 잠재력을 최대로 이끌어낸다는 것을 배웠습니다. 사무관이 되어서도 구성원 개개인을 존중하며 함께 성장하는 조직을 만들고 싶습니다."
+                }
+            },
+            "2": {
+                title: "갈등 조정 / 민원 해결",
+                strategy: "'회피'가 아닌 '정면 돌파'의 자세를 보여주는 것이 중요합니다. 문제의 본질을 파악하고, 원칙을 지키면서도 상대방을 설득하는 '현명한 해결사'의 이미지를 구축하십시오.",
+                example: {
+                    intro: "네, 갈등 상황에서 가장 중요한 것은 문제의 본질을 정확히 파악하고, 원칙을 기반으로 진정성 있게 소통하는 자세라고 생각합니다.",
+                    s: "○○ 사업 추진 시, 예산 배분을 두고 A부서와 B부서의 이해관계가 첨예하게 대립하여 사업이 장기간 표류하는 위기 상황이었습니다.",
+                    t: "양측의 감정적 대립을 해소하고, 기관 전체의 이익이라는 공동의 목표 아래 합의점을 찾아 사업을 정상화시키는 것이 핵심 과제였습니다.",
+                    a: "저는 먼저 양측 부서장과 실무진을 각각 1:1로 만나 각자의 진짜 속내와 우려 사항을 경청했습니다. 그 후, 제가 직접 관련 데이터를 분석하고 타 기관 사례를 조사하여, 양측의 요구를 일부 수용하면서도 기관 전체의 효율을 높일 수 있는 '제3의 대안'을 구체적인 보고서로 작성하여 제시했습니다. 이 과정에서 저는 중재자로서 양측의 입장을 투명하게 공유하고, 감정이 아닌 데이터에 기반한 토론을 이끌었습니다.",
+                    r: "초기에는 반발도 있었지만, 제 보고서의 객관성과 합리성을 바탕으로 설득을 거듭한 결과, 마침내 양측의 합의를 이끌어내 사업을 성공적으로 완수할 수 있었습니다. 이는 부서 간 협력의 좋은 선례가 되었습니다.",
+                    p: "복잡한 갈등일수록 원칙과 데이터, 그리고 상대방의 입장을 존중하는 진심이 가장 강력한 해결책임을 배웠습니다. 사무관으로서 앞으로도 조직 내외의 갈등을 회피하지 않고, 적극적으로 조정하며 시너지를 창출하는 역할을 하겠습니다."
+                }
+            },
+            "3": {
+                title: "장점 / 단점",
+                strategy: "장점은 '성과'와 연결하고, 단점은 '개선 노력'을 통해 '성장 가능성'으로 바꾸어 말하는 것이 핵심입니다. 솔직하되, 영리하게 포장해야 합니다.",
+                example: {
+                    intro: "저의 가장 큰 장점은 **'끝까지 파고들어 해결책을 찾아내는 끈기'**입니다. 반면, 보완할 점은 가끔 지나치게 몰입하여 넓은 시야를 놓칠 때가 있다는 점입니다.",
+                    s: "장점의 경우, 지난 ○○ 업무에서 전례 없는 예산 부족 문제에 부딪혔습니다. 단점의 경우, 해당 업무에 몰입하다 보니 다른 팀원들의 업무 진행 상황을 세심하게 챙기지 못할 뻔한 적이 있습니다.",
+                    t: "장점과 관련해서는 사업 좌초 위기를 막을 대체 재원을 찾는 것이, 단점과 관련해서는 개인의 성과가 아닌 팀의 성과를 위해 시야를 넓히는 것이 과제였습니다.",
+                    a: "장점을 발휘하여, 관련 조례와 지난 5년간의 예산 집행 내역, 타 기관 성공 사례를 밤새워 분석했습니다. 그 결과 숨어있던 예비비를 활용할 수 있는 법적 근거를 찾아내 상급자를 설득했습니다. 단점을 보완하기 위해, 저는 2년 전부터 중요한 업무를 시작할 때 반드시 '공동 체크리스트'를 구글 시트로 만들어 팀원들과 공유하고, 매일 아침 '10분 스탠딩 미팅'을 주도하여 전체 진행 상황을 파악하는 습관을 들였습니다.",
+                    r: "장점 덕분에 사업은 성공적으로 완수되었고, 이는 적극행정 우수사례로 선정되었습니다. 단점 보완 노력을 통해 팀의 업무 병목 현상을 사전에 방지할 수 있었고, 동료들로부터 '숲을 함께 보려 노력해줘서 고맙다'는 피드백을 받았습니다.",
+                    p: "저는 저의 강점인 끈기와 책임감을 더욱 발전시키고, 단점은 체계적인 노력을 통해 보완하여 어떤 위기 상황에서도 안정적으로 성과를 내는, 동료와 함께 성장하는 유능한 사무관이 되겠습니다."
+                }
+            },
+            "4": {
+                title: "공직가치 / 적극행정",
+                strategy: "'국민에 대한 봉사'와 '책임감'을 강조하며, 규정과 현실 사이에서 창의적인 해결책을 찾으려 노력한 경험을 제시하십시오.",
+                example: {
+                    intro: "공무원에게 가장 중요한 덕목은 **'국민의 눈높이에서 문제를 바라보는 공감 능력'**과 **'결과에 책임지는 용기'**라고 생각합니다.",
+                    s: "과거 한 민원인께서 규정상으로는 지원이 어려운 사안에 대해 지속적으로 도움을 요청하셨습니다. 첫 검토 결과는 '규정상 불가'였습니다.",
+                    t: "단순히 규정 뒤에 숨어 민원인의 절박함을 외면하는 것이 아니라, 법의 테두리 안에서 어떻게든 도울 방법을 찾아내는 것이 공무원의 진정한 역할이라고 생각했습니다.",
+                    a: "저는 책상에 앉아있기보다 직접 발로 뛰었습니다. 관련 법규와 지침을 원점부터 다시 검토하는 한편, 타 지자체 담당자 10여 명에게 직접 연락하여 유사 지원 사례가 있었는지 확인했습니다. 그 과정에서 법의 테두리 안에서 유연하게 해석할 수 있는 조항을 발견했고, 이를 근거로 법률 자문을 구하고 상급자를 설득하여 해당 민원인께 최소한의 도움이라도 드릴 수 있는 대안을 마련했습니다.",
+                    r: "비록 민원인이 원했던 100%의 해결은 아니었지만, 저의 노력을 통해 일부나마 문제를 해결할 수 있었고, 민원인께서도 '나의 일처럼 애써주어 고맙다'는 말씀을 해주셨을 때 큰 보람을 느꼈습니다.",
+                    p: "이 경험은 저에게 '안된다고 생각하기 전에, 된다는 마음으로 한 번 더 파고들자'는 적극행정의 교훈을 주었습니다. 사무관으로서 앞으로도 규정 뒤에 숨지 않고, 국민의 입장에서 해결책을 찾기 위해 발로 뛰는 공무원이 되겠습니다."
+                }
+            }
+        };
+
+        const colors = { s: '#3498db', t: '#f1c40f', a: '#e74c3c', r: '#2ecc71', p: '#9b59b6' };
         const modal = document.getElementById('modal');
         const modalBody = document.getElementById('modal-body');
 
         document.querySelectorAll('.card').forEach(card => {
             card.addEventListener('click', () => {
                 const id = card.id.split('-')[1];
-                const content = data[id];
+                const content = interviewData[id];
                 modalBody.innerHTML = `
                     <div class="flex justify-between items-start">
                         <h2 class="text-3xl font-bold text-slate-800 mb-4">${content.title}</h2>
@@ -366,59 +342,27 @@
                     <div class="bg-slate-50 p-6 rounded-lg">
                         <p class="mb-4 text-lg"><span class="font-bold text-purple-600">"</span>${content.example.intro}<span class="font-bold text-purple-600">"</span></p>
                         <div class="starp-flow">
-                            <div class="starp-item">
-                                <div class="starp-icon" style="background-color: ${colors.s};">S</div>
-                                <div>
-                                    <h4 class="font-bold">Situation (상황)</h4>
-                                    <p class="text-slate-600">${content.example.s}</p>
-                                </div>
-                            </div>
+                            <div class="starp-item"><div class="starp-icon" style="background-color: ${colors.s};">S</div><div><h4 class="font-bold">Situation (상황)</h4><p class="text-slate-600">${content.example.s}</p></div></div>
                             <div class="starp-arrow">▼</div>
-                            <div class="starp-item">
-                                <div class="starp-icon" style="background-color: ${colors.t};">T</div>
-                                <div>
-                                    <h4 class="font-bold">Task (과제/문제)</h4>
-                                    <p class="text-slate-600">${content.example.t}</p>
-                                </div>
-                            </div>
+                            <div class="starp-item"><div class="starp-icon" style="background-color: ${colors.t};">T</div><div><h4 class="font-bold">Task (과제/문제)</h4><p class="text-slate-600">${content.example.t}</p></div></div>
                             <div class="starp-arrow">▼</div>
-                            <div class="starp-item">
-                                <div class="starp-icon" style="background-color: ${colors.a};">A</div>
-                                <div>
-                                    <h4 class="font-bold">Action & My Role (내 역할/행동)</h4>
-                                    <p class="text-slate-600">${content.example.a}</p>
-                                </div>
-                            </div>
+                            <div class="starp-item"><div class="starp-icon" style="background-color: ${colors.a};">A</div><div><h4 class="font-bold">Action & My Role (내 역할/행동)</h4><p class="text-slate-600">${content.example.a}</p></div></div>
                             <div class="starp-arrow">▼</div>
-                            <div class="starp-item">
-                                <div class="starp-icon" style="background-color: ${colors.r};">R</div>
-                                <div>
-                                    <h4 class="font-bold">Result (성과)</h4>
-                                    <p class="text-slate-600">${content.example.r}</p>
-                                </div>
-                            </div>
+                            <div class="starp-item"><div class="starp-icon" style="background-color: ${colors.r};">R</div><div><h4 class="font-bold">Result (성과)</h4><p class="text-slate-600">${content.example.r}</p></div></div>
                             <div class="starp-arrow">▼</div>
-                            <div class="starp-item">
-                                <div class="starp-icon" style="background-color: ${colors.p};">P</div>
-                                <div>
-                                    <h4 class="font-bold">Point/Perspective (배운 점/확장)</h4>
-                                    <p class="text-slate-600">${content.example.p}</p>
-                                </div>
-                            </div>
+                            <div class="starp-item"><div class="starp-icon" style="background-color: ${colors.p};">P</div><div><h4 class="font-bold">Point/Perspective (배운 점/확장)</h4><p class="text-slate-600">${content.example.p}</p></div></div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
                 modal.classList.remove('hidden');
                 document.getElementById('closeModal').addEventListener('click', () => modal.classList.add('hidden'));
             });
         });
 
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.add('hidden');
-            }
+            if (e.target === modal) modal.classList.add('hidden');
         });
-
+        
+        // --- Chart.js Logic ---
         new Chart(document.getElementById('competencyPillarsChart'), {
             type: 'radar',
             data: {
@@ -442,7 +386,7 @@
                     r: {
                         angleLines: { color: 'rgba(0, 0, 0, 0.1)' },
                         grid: { color: 'rgba(0, 0, 0, 0.1)' },
-                        pointLabels: { font: { size: 14, weight: 'bold' } },
+                        pointLabels: { font: { size: 14, weight: 'bold', family: "'Noto Sans KR', sans-serif" } },
                         suggestedMin: 0,
                         suggestedMax: 5,
                         ticks: { display: false, stepSize: 1 }
