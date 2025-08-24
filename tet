@@ -1,0 +1,691 @@
+import React, { useEffect, useMemo, useRef, useState } from "react";
+
+// 2D Tetris (single-file React + Tailwind)
+// Controls:
+// ←/→: Move | ↓: Soft drop | ↑ / X: Rotate CW | Z: Rotate CCW
+// Space: Hard drop | Shift/C: Hold | P: Pause/Resume | R: Restart
+
+const COLS = 10;
+const ROWS = 20;
+const VISIBLE_ROWS = 20; // for clarity (no hidden rows)
+
+// Tetromino shapes (rotation base)
+const SHAPES = {
+  I: [
+    [0, 0, 0, 0],
+    [1, 1, 1, 1],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ],
+  J: [
+    [1, 0, 0],
+    [1, 1, 1],
+    [0, 0, 0],
+  ],
+  L: [
+    [0, 0, 1],
+    [1, 1, 1],
+    [0, 0, 0],
+  ],
+  O: [
+    [1, 1],
+    [1, 1],
+  ],
+  S: [
+    [0, 1, 1],
+    [1, 1, 0],
+    [0, 0, 0],
+  ],
+  T: [
+    [0, 1, 0],
+    [1, 1, 1],
+    [0, 0, 0],
+  ],
+  Z: [
+    [1, 1, 0],
+    [0, 1, 1],
+    [0, 0, 0],
+  ],
+};
+
+const COLORS = {
+  I: "bg-cyan-400 border-cyan-300",
+  J: "bg-blue-500 border-blue-300",
+  L: "bg-orange-400 border-orange-300",
+  O: "bg-yellow-300 border-yellow-200",
+  S: "bg-green-500 border-green-300",
+  T: "bg-purple-500 border-purple-300",
+  Z: "bg-red-500 border-red-300",
+  GHOST: "bg-transparent border-white/30", // ghost piece
+};
+
+// ===== Letter system =====
+const LETTERS = ["테", "트", "리", "스"];
+function mulberry32(a) {
+  return function () {
+    let t = (a += 0x6d2b79f5);
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function randomLetter(rng) {
+  return LETTERS[Math.floor(rng() * LETTERS.length)];
+}
+function genLetterMatrix(matrix, seed) {
+  const size = matrix.length;
+  const rng = mulberry32(seed >>> 0);
+  const letters = Array.from({ length: size }, () => Array(size).fill(null));
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      if (matrix[y][x]) letters[y][x] = randomLetter(rng);
+    }
+  }
+  return letters;
+}
+function hash2d(x, y) {
+  // simple deterministic hash for fallback letters
+  let h = (x * 73856093) ^ (y * 19349663);
+  return (h >>> 0) % LETTERS.length;
+}
+function letterFromCoord(x, y) {
+  return LETTERS[hash2d(x, y)];
+}
+
+function createEmptyBoard() {
+  return Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+}
+
+function rotateMatrix(mat, dir = 1) {
+  const N = mat.length;
+  const res = Array.from({ length: N }, () => Array(N).fill(0));
+  for (let y = 0; y < N; y++) {
+    for (let x = 0; x < N; x++) {
+      if (dir === 1) res[x][N - 1 - y] = mat[y][x]; // CW
+      else res[N - 1 - x][y] = mat[y][x]; // CCW
+    }
+  }
+  return res;
+}
+function rotateMatrixAny(mat, dir = 1) {
+  const N = mat.length;
+  const res = Array.from({ length: N }, () => Array(N).fill(null));
+  for (let y = 0; y < N; y++) {
+    for (let x = 0; x < N; x++) {
+      if (dir === 1) res[x][N - 1 - y] = mat[y][x]; // CW
+      else res[N - 1 - x][y] = mat[y][x]; // CCW
+    }
+  }
+  return res;
+}
+
+function getShapeMatrix(type) {
+  const base = SHAPES[type];
+  // normalize to square matrix for rotation (2,3,4 -> pad to 4)
+  const N = Math.max(base.length, base[0].length);
+  const size = N < 3 ? 3 : N; // at least 3
+  const mat = Array.from({ length: size }, (_, r) =>
+    Array.from({ length: size }, (_, c) => (base[r]?.[c] ? 1 : 0))
+  );
+  return mat;
+}
+
+function collides(board, matrix, pos) {
+  const size = matrix.length;
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      if (!matrix[y][x]) continue;
+      const bx = pos.x + x;
+      const by = pos.y + y;
+      if (bx < 0 || bx >= COLS || by >= ROWS) return true;
+      if (by >= 0 && board[by][bx]) return true;
+    }
+  }
+  return false;
+}
+
+function merge(board, matrix, pos, type, letters) {
+  const newBoard = board.map((row) => row.slice());
+  const size = matrix.length;
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      if (matrix[y][x]) {
+        const bx = pos.x + x;
+        const by = pos.y + y;
+        if (by >= 0 && by < ROWS && bx >= 0 && bx < COLS) {
+          const letter = letters?.[y]?.[x] ?? letterFromCoord(bx, by);
+          newBoard[by][bx] = { type, letter };
+        }
+      }
+    }
+  }
+  return newBoard;
+}
+
+function clearLines(board) {
+  const newBoard = [];
+  let cleared = 0;
+  for (let r = 0; r < ROWS; r++) {
+    if (board[r].every((cell) => cell)) {
+      cleared++;
+    } else {
+      newBoard.push(board[r]);
+    }
+  }
+  while (newBoard.length < ROWS) newBoard.unshift(Array(COLS).fill(null));
+  return { board: newBoard, cleared };
+}
+
+function calcSpeedMs(level) {
+  // Smooth speed curve: ~1000ms at L1 → ~100ms later
+  return Math.max(100, Math.floor(1000 * Math.pow(0.85, level - 1)));
+}
+
+function scoreForLines(lines, level) {
+  const table = { 1: 100, 2: 300, 3: 500, 4: 800 };
+  return (table[lines] || 0) * level;
+}
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function genBag() {
+  return shuffle(["I", "J", "L", "O", "S", "T", "Z"]);
+}
+
+function useInterval(callback, delay, active = true) {
+  const savedRef = useRef(callback);
+  useEffect(() => {
+    savedRef.current = callback;
+  }, [callback]);
+  useEffect(() => {
+    if (!active || delay == null) return;
+    const id = setInterval(() => savedRef.current(), delay);
+    return () => clearInterval(id);
+  }, [delay, active]);
+}
+
+// ====== Simple WebAudio for line-clear sound ======
+function useAudio() {
+  const audioCtxRef = useRef(null);
+  function getAudioCtx() {
+    if (!audioCtxRef.current) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      audioCtxRef.current = AC ? new AC() : null;
+    }
+    return audioCtxRef.current;
+  }
+  function ensureAudio() {
+    const ctx = getAudioCtx();
+    if (ctx && ctx.state !== "running") ctx.resume().catch(() => {});
+  }
+  function beep(freq, when = 0, dur = 0.15, vol = 0.06, type = "triangle") {
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+    const t0 = ctx.currentTime + when;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.linearRampToValueAtTime(vol, t0 + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    osc.start(t0);
+    osc.stop(t0 + dur);
+  }
+  function playClearSound(lines = 1) {
+    // quick rising notes; more lines → more notes
+    const base = 392; // G4
+    const steps = [0, 3, 7, 12];
+    for (let i = 0; i < lines; i++) {
+      const semis = steps[i] ?? steps[steps.length - 1];
+      const freq = base * Math.pow(2, semis / 12);
+      beep(freq, i * 0.06, 0.18, 0.07, "triangle");
+    }
+  }
+  return { ensureAudio, playClearSound };
+}
+
+export default function Tetris2D() {
+  // Moved above all state initializers to avoid TDZ with spawnInitial()
+  const pieceIdRef = useRef(1);
+  const [board, setBoard] = useState(createEmptyBoard());
+  const [current, setCurrent] = useState(() => spawnInitial());
+  const [queue, setQueue] = useState(() => refillQueue([]));
+  const [hold, setHold] = useState(null); // type or null
+  const [holdUsed, setHoldUsed] = useState(false);
+  const [score, setScore] = useState(0);
+  const [lines, setLines] = useState(0);
+  const [level, setLevel] = useState(1);
+  const [paused, setPaused] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
+  const { ensureAudio, playClearSound } = useAudio();
+
+  function spawnInitial() {
+    const type = genBag()[0];
+    const matrix = getShapeMatrix(type);
+    const letters = genLetterMatrix(matrix, pieceIdRef.current++);
+    const x = Math.floor((COLS - matrix.length) / 2);
+    return { type, matrix, letters, x, y: -2 };
+  }
+
+  function refillQueue(q) {
+    const out = q.slice();
+    while (out.length < 5) {
+      out.push(...genBag());
+    }
+    return out;
+  }
+
+  function spawnNext(prevBoard = board, prevQueue = queue) {
+    let nextQueue = prevQueue.slice();
+    if (nextQueue.length < 1) nextQueue = refillQueue(nextQueue);
+    const type = nextQueue.shift();
+    const matrix = getShapeMatrix(type);
+    const letters = genLetterMatrix(matrix, pieceIdRef.current++);
+    const x = Math.floor((COLS - matrix.length) / 2);
+    const y = -2;
+    const newPiece = { type, matrix, letters, x, y };
+    // If immediately collides → game over
+    if (collides(prevBoard, matrix, { x, y })) {
+      setGameOver(true);
+      return { board: prevBoard, queue: nextQueue, piece: newPiece };
+    }
+    setQueue(refillQueue(nextQueue));
+    setHoldUsed(false);
+    return { board: prevBoard, queue: refillQueue(nextQueue), piece: newPiece };
+  }
+
+  const dropMs = useMemo(() => calcSpeedMs(level), [level]);
+
+  useInterval(() => {
+    if (!paused && !gameOver) moveDown();
+  }, dropMs, !paused && !gameOver);
+
+  // Keyboard controls
+  useEffect(() => {
+    function onKey(e) {
+      if (e.repeat) e.preventDefault();
+      ensureAudio();
+      const key = e.key.toLowerCase();
+      if (key === "p") return togglePause();
+      if (key === "r") return restart();
+      if (paused || gameOver) return;
+
+      if (key === "arrowleft") move(-1);
+      else if (key === "arrowright") move(1);
+      else if (key === "arrowdown") softDrop();
+      else if (key === "arrowup" || key === "x") rotate(1);
+      else if (key === "z") rotate(-1);
+      else if (key === " ") hardDrop();
+      else if (key === "shift" || key === "c") holdSwap();
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [paused, gameOver, current, board, holdUsed, hold, queue, level]);
+
+  function togglePause() {
+    if (gameOver) return;
+    setPaused((p) => !p);
+  }
+
+  function restart() {
+    setBoard(createEmptyBoard());
+    setCurrent(spawnInitial());
+    setQueue(refillQueue([]));
+    setHold(null);
+    setHoldUsed(false);
+    setScore(0);
+    setLines(0);
+    setLevel(1);
+    setPaused(false);
+    setGameOver(false);
+  }
+
+  function move(dir) {
+    const pos = { x: current.x + dir, y: current.y };
+    if (!collides(board, current.matrix, pos)) setCurrent({ ...current, ...pos });
+  }
+
+  function softDrop() {
+    const pos = { x: current.x, y: current.y + 1 };
+    if (!collides(board, current.matrix, pos)) {
+      setCurrent({ ...current, ...pos });
+      setScore((s) => s + 1); // soft drop bonus
+    } else {
+      lockPiece();
+    }
+  }
+
+  function hardDrop() {
+    let y = current.y;
+    let steps = 0;
+    while (!collides(board, current.matrix, { x: current.x, y: y + 1 })) {
+      y++;
+      steps++;
+    }
+    setCurrent((p) => ({ ...p, y }));
+    setScore((s) => s + steps * 2); // hard drop bonus
+    // lock immediately after hard drop
+    setTimeout(lockPiece, 0);
+  }
+
+  function rotate(dir) {
+    const rotated = rotateMatrix(current.matrix, dir);
+    const rotatedLetters = rotateMatrixAny(current.letters, dir);
+    const kicks = [0, -1, 1, -2, 2];
+    for (const k of kicks) {
+      const pos = { x: current.x + k, y: current.y };
+      if (!collides(board, rotated, pos)) {
+        setCurrent({ ...current, matrix: rotated, letters: rotatedLetters, ...pos });
+        return;
+      }
+    }
+  }
+
+  function holdSwap() {
+    if (holdUsed) return; // only once per lock
+    const curType = current.type;
+    if (hold) {
+      // swap
+      const newType = hold;
+      const matrix = getShapeMatrix(newType);
+      const letters = genLetterMatrix(matrix, pieceIdRef.current++);
+      const x = Math.floor((COLS - matrix.length) / 2);
+      const y = -2;
+      if (collides(board, matrix, { x, y })) {
+        // cannot place → ignore hold
+        return;
+      }
+      setHold(curType);
+      setCurrent({ type: newType, matrix, letters, x, y });
+    } else {
+      // move current to hold, spawn new
+      setHold(curType);
+      const { piece } = spawnNext(board, queue);
+      setCurrent(piece);
+    }
+    setHoldUsed(true);
+  }
+
+  function moveDown() {
+    const pos = { x: current.x, y: current.y + 1 };
+    if (!collides(board, current.matrix, pos)) {
+      setCurrent({ ...current, ...pos });
+    } else {
+      lockPiece();
+    }
+  }
+
+  function lockPiece() {
+    const merged = merge(
+      board,
+      current.matrix,
+      { x: current.x, y: current.y },
+      current.type,
+      current.letters
+    );
+    const { board: clearedBoard, cleared } = clearLines(merged);
+    if (cleared > 0) {
+      playClearSound(cleared);
+      setScore((s) => s + scoreForLines(cleared, level));
+      setLines((l) => l + cleared);
+      setLevel((lv) => 1 + Math.floor((lines + cleared) / 10));
+    }
+    const { piece } = spawnNext(clearedBoard, queue);
+    setBoard(clearedBoard);
+    setCurrent(piece);
+  }
+
+  // Ghost piece position
+  const ghostPos = useMemo(() => {
+    let y = current.y;
+    while (!collides(board, current.matrix, { x: current.x, y: y + 1 })) y++;
+    return { x: current.x, y };
+  }, [board, current]);
+
+  // Render helpers
+  function cellClass(type, ghost = false) {
+    if (!type) return "bg-gray-800/40 border-gray-700";
+    if (ghost) return COLORS.GHOST + " border";
+    const base = COLORS[type] || "bg-white border-white";
+    return base + " border";
+  }
+
+  function renderBoard() {
+    // overlay current + ghost on top of board
+    const display = board.map((row) => row.slice());
+
+    // ghost first (so real piece draws on top visually)
+    for (let y = 0; y < current.matrix.length; y++) {
+      for (let x = 0; x < current.matrix.length; x++) {
+        if (!current.matrix[y][x]) continue;
+        const gx = ghostPos.x + x;
+        const gy = ghostPos.y + y;
+        if (gy >= 0 && gy < ROWS && gx >= 0 && gx < COLS) {
+          // mark ghost with special token
+          if (!display[gy][gx]) display[gy][gx] = { ghost: true, type: current.type };
+        }
+      }
+    }
+
+    // current piece
+    for (let y = 0; y < current.matrix.length; y++) {
+      for (let x = 0; x < current.matrix.length; x++) {
+        if (!current.matrix[y][x]) continue;
+        const bx = current.x + x;
+        const by = current.y + y;
+        if (by >= 0 && by < ROWS && bx >= 0 && bx < COLS)
+          display[by][bx] = {
+            type: current.type,
+            letter: current.letters?.[y]?.[x] ?? letterFromCoord(bx, by),
+          };
+      }
+    }
+
+    return (
+      <div
+        className="relative rounded-2xl p-3 sm:p-4 bg-gray-900 shadow-xl"
+        style={{ width: "fit-content" }}
+      >
+        <div
+          className="grid gap-[2px] bg-gray-800/60 p-[2px] rounded-lg"
+          style={{ gridTemplateColumns: `repeat(${COLS}, 1fr)` }}
+        >
+          {display.slice(ROWS - VISIBLE_ROWS).map((row, rIdx) =>
+            row.map((cell, cIdx) => {
+              const isObj = cell !== null && typeof cell === "object";
+              const ghost = isObj && cell.ghost;
+              let type = null;
+              let letter = null;
+              if (typeof cell === "string") {
+                type = cell;
+              } else if (isObj) {
+                type = cell.type;
+                if (!ghost) letter = cell.letter ?? null;
+              }
+              return (
+                <div
+                  key={`${rIdx}-${cIdx}`}
+                  className={
+                    "w-7 h-7 sm:w-8 sm:h-8 rounded-[4px] user-select-none relative flex items-center justify-center " +
+                    (ghost ? cellClass(type, true) : cellClass(type, false))
+                  }
+                >
+                  {!ghost && letter && (
+                    <span
+                      className="text-[10px] sm:text-xs font-bold text-white"
+                      style={{ textShadow: "0 1px 1px rgba(0,0,0,0.6), 0 0 2px rgba(0,0,0,0.5)" }}
+                    >
+                      {letter}
+                    </span>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* Overlay messages */}
+        {(paused || gameOver) && (
+          <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/60">
+            <div className="text-center">
+              <div className="text-white text-xl sm:text-2xl font-bold mb-2">
+                {gameOver ? "GAME OVER" : "PAUSED"}
+              </div>
+              <div className="text-gray-200 text-sm">Press R to Restart • P to Resume</div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  function renderMini(type) {
+    const m = getShapeMatrix(type);
+    const size = m.length;
+    // deterministic letters per preview tile
+    const rng = mulberry32(type.charCodeAt(0) * 9973);
+    const cells = [];
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        const filled = m[y][x] === 1;
+        const letter = filled ? randomLetter(rng) : null;
+        cells.push(
+          <div
+            key={`${type}-${y}-${x}`}
+            className={
+              "w-4 h-4 sm:w-5 sm:h-5 rounded-[3px] border relative flex items-center justify-center " +
+              (filled ? COLORS[type] : "border-gray-700 bg-transparent")
+            }
+          >
+            {filled && (
+              <span className="text-[8px] sm:text-[10px] font-bold text-white" style={{ textShadow: "0 1px 1px rgba(0,0,0,0.6)" }}>
+                {letter}
+              </span>
+            )}
+          </div>
+        );
+      }
+    }
+    return (
+      <div
+        className="grid gap-[2px] bg-gray-800/50 p-[2px] rounded-md"
+        style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }}
+      >
+        {cells}
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen w-full bg-gradient-to-b from-slate-900 to-slate-950 text-white flex items-center justify-center p-4">
+      <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-start">
+        {/* Left panel */}
+        <div className="space-y-3 order-3 md:order-1">
+          <div className="bg-gray-900/70 rounded-2xl p-4 shadow-lg">
+            <div className="text-sm text-gray-300 mb-2">HOLD</div>
+            <div className="flex items-center gap-3">
+              <div className={`rounded-xl p-3 bg-gray-800/60 min-w-[88px] min-h-[88px] flex items-center justify-center ${hold ? "" : "border border-dashed border-gray-600"}`}>
+                {hold ? renderMini(hold) : <span className="text-gray-500 text-xs">Empty</span>}
+              </div>
+              <button
+                onClick={() => {
+                  ensureAudio();
+                  holdSwap();
+                }}
+                className="px-3 py-2 rounded-xl bg-gray-700 hover:bg-gray-600 active:scale-[0.98] transition text-sm"
+                disabled={paused || gameOver}
+              >
+                Hold (Shift/C)
+              </button>
+            </div>
+            {holdUsed && <div className="text-xs text-amber-300 mt-2">* 이번 라운드에서는 Hold 재사용 불가</div>}
+          </div>
+
+          <div className="bg-gray-900/70 rounded-2xl p-4 shadow-lg">
+            <div className="text-sm text-gray-300 mb-2">NEXT</div>
+            <div className="flex gap-3">
+              {queue.slice(0, 5).map((t, i) => (
+                <div key={i} className="rounded-xl p-2 bg-gray-800/60">
+                  {renderMini(t)}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-gray-900/70 rounded-2xl p-4 shadow-lg">
+            <div className="text-sm text-gray-300 mb-2">CONTROLS</div>
+            <ul className="text-xs leading-6 text-gray-300">
+              <li>←/→ : 좌/우 이동</li>
+              <li>↓ : 소프트 드롭 (+1점/칸)</li>
+              <li>↑ 또는 X : 시계방향 회전</li>
+              <li>Z : 반시계 회전</li>
+              <li>Space : 하드 드롭 (+2점/칸)</li>
+              <li>Shift 또는 C : 홀드</li>
+              <li>P : 일시정지 / 재개</li>
+              <li>R : 다시 시작</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Center: Board */}
+        <div className="order-1 md:order-2 flex flex-col items-center gap-3">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">TETRIS — 2D</h1>
+          <div className="flex items-center gap-3 text-sm text-gray-300">
+            <div className="px-3 py-1 rounded-lg bg-gray-800/80">Level <span className="font-semibold text-white">{level}</span></div>
+            <div className="px-3 py-1 rounded-lg bg-gray-800/80">Lines <span className="font-semibold text-white">{lines}</span></div>
+            <div className="px-3 py-1 rounded-lg bg-gray-800/80">Score <span className="font-semibold text-white">{score.toLocaleString()}</span></div>
+          </div>
+          {renderBoard()}
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                ensureAudio();
+                togglePause();
+              }}
+              className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-[0.98] transition"
+              disabled={gameOver}
+            >
+              {paused ? "Resume (P)" : "Pause (P)"}
+            </button>
+            <button
+              onClick={() => {
+                ensureAudio();
+                restart();
+              }}
+              className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-[0.98] transition"
+            >
+              Restart (R)
+            </button>
+          </div>
+        </div>
+
+        {/* Right panel */}
+        <div className="space-y-3 order-2 md:order-3">
+          <div className="bg-gray-900/70 rounded-2xl p-4 shadow-lg">
+            <div className="text-sm text-gray-300 mb-2">RULES</div>
+            <ul className="text-xs leading-6 text-gray-300 list-disc pl-4">
+              <li>한 번에 제거한 줄이 많을수록 점수 보너스 상승 (1/2/3/4줄 = 100/300/500/800 × 레벨)</li>
+              <li>10줄 제거할 때마다 레벨업, 낙하 속도 증가</li>
+              <li>고스트(투명) 블록은 하드 드롭 위치 미리보기</li>
+              <li>홀드는 한 번 고정 전까지만 1회 사용 가능</li>
+            </ul>
+          </div>
+          <div className="bg-gray-900/70 rounded-2xl p-4 shadow-lg">
+            <div className="text-sm text-gray-300 mb-2">TIP</div>
+            <p className="text-xs text-gray-300">상단에 닿기 전에 라인 클리어 템포를 유지하면 점수 폭발 💥</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
